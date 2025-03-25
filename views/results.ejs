@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Résultats d'Analyse | Email Cleaner</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+    <!-- Header -->
+    <header class="app-header">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-md-8 text-md-start text-center">
+                    <h1 class="app-title display-5 mb-1">Email Cleaner</h1>
+                    <p class="app-subtitle mb-0">Résultats complets de votre analyse</p>
+                </div>
+                <div class="col-md-4 text-md-end text-center mt-3 mt-md-0">
+                    <a href="/" class="btn btn-outline-light">
+                        <i class="bi bi-arrow-left-circle me-1"></i> Nouvelle analyse
+                    </a>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main class="container py-4 animate-fade-in">
+        <div class="row">
+            <!-- Carte de résumé -->
+            <div class="col-lg-12 mb-4">
+                <div class="card shadow-sm">
+                    <div class="card-body p-4">
+                        <div class="d-flex flex-wrap justify-content-between align-items-center mb-3">
+                            <h2 class="h4 mb-0">
+                                <i class="bi bi-bar-chart-line me-2 text-primary"></i>
+                                Résumé de l'analyse
+                            </h2>
+                            <div class="btn-group">
+                                <button id="exportCsv" class="btn btn-success btn-sm">
+                                    <i class="bi bi-file-earmark-excel me-1"></i> Exporter CSV
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <div class="row stats-summary">
+                            <div class="col-md-3 col-6 mb-3">
+                                <div class="p-3 rounded-3 bg-light text-center">
+                                    <h3 class="h2 mb-1 text-dark"><%= stats.total %></h3>
+                                    <p class="mb-0 text-muted">Emails analysés</p>
+                                </div>
+                            </div>
+                            <div class="col-md-3 col-6 mb-3">
+                                <div class="p-3 rounded-3 bg-success bg-opacity-10 text-center">
+                                    <h3 class="h2 mb-1 text-dark"><%= stats.valid %></h3>
+                                    <p class="mb-0 text-muted">Emails valides</p>
+                                </div>
+                            </div>
+                            <div class="col-md-3 col-6 mb-3">
+                                <div class="p-3 rounded-3 bg-danger bg-opacity-10 text-center">
+                                    <h3 class="h2 mb-1 text-dark"><%= stats.invalid %></h3>
+                                    <p class="mb-0 text-muted">Emails invalides</p>
+                                </div>
+                            </div>
+                            <div class="col-md-3 col-6 mb-3">
+                                <div class="p-3 rounded-3 bg-warning bg-opacity-10 text-center">
+                                    <h3 class="h2 mb-1 text-dark"><%= stats.disposable %></h3>
+                                    <p class="mb-0 text-muted">Emails jetables</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Statistiques -->
+            <div class="col-lg-4 mb-4">
+                <div class="card shadow h-100">
+                    <div class="card-header primary-gradient">
+                        <h2 class="h5 mb-0">
+                            <i class="bi bi-graph-up me-2"></i>
+                            Statistiques détaillées
+                        </h2>
+                    </div>
+                    <div class="card-body">
+                        <div class="stats">
+                            <% 
+                            const validPercent = Math.round((stats.valid / stats.total) * 100);
+                            const invalidPercent = Math.round((stats.invalid / stats.total) * 100);
+                            const disposablePercent = Math.round((stats.disposable / stats.total) * 100);
+                            const probablyInvalidPercent = Math.round((stats.probablyInvalid / stats.total) * 100);
+                            %>
+                            
+                            <div class="stat-item mb-3">
+                                <div class="d-flex justify-content-between">
+                                    <span>Emails valides:</span>
+                                    <span class="fw-bold text-success"><%= stats.valid %> (<%= validPercent %>%)</span>
+                                </div>
+                                <div class="progress mt-1">
+                                    <div class="progress-bar bg-success" style="width: 0%" data-percent="<%= validPercent %>"></div>
+                                </div>
+                            </div>
+                            
+                            <div class="stat-item mb-3">
+                                <div class="d-flex justify-content-between">
+                                    <span>Emails invalides:</span>
+                                    <span class="fw-bold text-danger"><%= stats.invalid %> (<%= invalidPercent %>%)</span>
+                                </div>
+                                <div class="progress mt-1">
+                                    <div class="progress-bar bg-danger" style="width: 0%" data-percent="<%= invalidPercent %>"></div>
+                                </div>
+                            </div>
+                            
+                            <div class="stat-item mb-3">
+                                <div class="d-flex justify-content-between">
+                                    <span>Emails jetables:</span>
+                                    <span class="fw-bold text-warning"><%= stats.disposable %> (<%= disposablePercent %>%)</span>
+                                </div>
+                                <div class="progress mt-1">
+                                    <div class="progress-bar bg-warning" style="width: 0%" data-percent="<%= disposablePercent %>"></div>
+                                </div>
+                            </div>
+                            
+                            <div class="stat-item probably-invalid mb-3">
+                                <div class="d-flex justify-content-between">
+                                    <span>Probablement invalides:</span>
+                                    <span class="fw-bold" style="color: #f97316"><%= stats.probablyInvalid %> (<%= probablyInvalidPercent %>%)</span>
+                                </div>
+                                <div class="progress mt-1">
+                                    <div class="progress-bar bg-orange" style="width: 0%" data-percent="<%= probablyInvalidPercent %>"></div>
+                                </div>
+                            </div>
+                            
+                            <hr class="my-4">
+                            
+                            <div class="stat-item mb-3">
+                                <div class="d-flex align-items-center">
+                                    <div class="me-3 p-2 rounded-circle bg-light text-center" style="width: 30px; height: 30px;">
+                                        <i class="bi bi-x-circle text-danger small"></i>
+                                    </div>
+                                    <div>
+                                        <div class="d-flex justify-content-between w-100">
+                                            <span>Erreurs de syntaxe:</span>
+                                            <span class="fw-bold text-secondary"><%= stats.syntaxErrors %></span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="stat-item mb-3">
+                                <div class="d-flex align-items-center">
+                                    <div class="me-3 p-2 rounded-circle bg-light text-center" style="width: 30px; height: 30px;">
+                                        <i class="bi bi-hdd-network text-danger small"></i>
+                                    </div>
+                                    <div>
+                                        <div class="d-flex justify-content-between w-100">
+                                            <span>Erreurs de MX:</span>
+                                            <span class="fw-bold text-secondary"><%= stats.mxErrors %></span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Liste des emails -->
+            <div class="col-lg-8 mb-4">
+                <div class="card shadow h-100">
+                    <div class="card-header primary-gradient">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <h2 class="h5 mb-0">
+                                <i class="bi bi-list-check me-2"></i>
+                                Résultats détaillés
+                            </h2>
+                            <div class="input-group input-group-sm w-50">
+                                <span class="input-group-text bg-white border-end-0">
+                                    <i class="bi bi-search text-muted"></i>
+                                </span>
+                                <input type="text" id="searchEmail" class="form-control border-start-0" placeholder="Rechercher un email...">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-body p-0">
+                        <div class="table-responsive">
+                            <table class="table table-hover mb-0">
+                                <thead>
+                                    <tr>
+                                        <th>Email</th>
+                                        <th>Statut</th>
+                                        <th class="text-end">Détails</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <% results.forEach(function(result) { %>
+                                    <tr class="<%= result.isValid ? 'table-success' : (result.probablyInvalid ? 'table-orange' : (result.disposable ? 'table-warning' : 'table-danger')) %>">
+                                        <td><%= result.email %></td>
+                                        <td>
+                                            <% if (result.isValid) { %>
+                                                <span class="badge bg-success">Valide</span>
+                                            <% } else if (result.probablyInvalid) { %>
+                                                <span class="badge bg-orange text-white">Probablement Invalide</span>
+                                            <% } else if (result.disposable) { %>
+                                                <span class="badge bg-warning text-dark">Jetable</span>
+                                            <% } else { %>
+                                                <span class="badge bg-danger">Invalide</span>
+                                            <% } %>
+                                        </td>
+                                        <td class="text-end">
+                                            <button type="button" class="btn btn-sm btn-light" data-bs-toggle="popover" data-bs-placement="left" data-bs-trigger="hover"
+                                                title="Détails de vérification"
+                                                data-bs-content="<div class='p-1'>
+                                                               <div class='mb-2'><span class='badge <%= result.syntax ? 'bg-success' : 'bg-danger' %> me-2'>Syntaxe</span> <%= result.syntax ? 'Valide ✅' : 'Invalide ❌' %></div>
+                                                               <div class='mb-2'><span class='badge <%= result.mx ? 'bg-success' : 'bg-danger' %> me-2'>MX</span> <%= result.mx ? 'Valide ✅' : 'Invalide ❌' %></div>
+                                                               <div class='mb-2'><span class='badge <%= !result.disposable ? 'bg-success' : 'bg-warning' %> me-2'>Type</span> <%= result.disposable ? 'Jetable ⚠️' : 'Normal ✅' %></div>
+                                                               <div class='mb-2'><span class='badge <%= !result.probablyInvalid ? 'bg-success' : 'bg-orange' %> me-2'>Boîte</span> <%= result.probablyInvalid ? 'Suspect ⚠️' : 'OK ✅' %></div>
+                                                               <% if (result.messages.length > 0) { %>
+                                                               <div class='mt-3 border-top pt-2'><strong>Messages:</strong></div>
+                                                               <ul class='ps-3 mb-0'>
+                                                                <% result.messages.forEach(function(msg) { %>
+                                                                  <li><%= msg %></li>
+                                                                <% }); %>
+                                                               </ul>
+                                                               <% } %>
+                                                               </div>">
+                                                <i class="bi bi-info-circle"></i> Détails
+                                            </button>
+                                        </td>
+                                    </tr>
+                                    <% }); %>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <div class="container text-center">
+            <p class="mb-0">
+                <i class="bi bi-envelope-check me-2"></i> 
+                Email Cleaner &copy; <%= new Date().getFullYear() %> | Nettoyage intelligent de listes d'emails
+            </p>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Fonction d'export CSV
+        function exportResults() {
+            const results = JSON.parse('<%- JSON.stringify(results).replace(/\'/g, "\\\'").replace(/\\/g, "\\\\") %>');
+            let csvContent = "data:text/csv;charset=utf-8,";
+            
+            // Entêtes
+            csvContent += "Email,Statut,Syntaxe,MX,Jetable,Probablement invalide,Messages\n";
+            
+            // Données
+            results.forEach(function(result) {
+                const status = result.isValid ? "Valide" : (result.probablyInvalid ? "Probablement invalide" : (result.disposable ? "Jetable" : "Invalide"));
+                const syntax = result.syntax ? "Oui" : "Non";
+                const mx = result.mx ? "Oui" : "Non";
+                const disposable = result.disposable ? "Oui" : "Non";
+                const probablyInvalid = result.probablyInvalid ? "Oui" : "Non";
+                const messages = result.messages.join(" | ").replace(/"/g, '""');
+                
+                csvContent += `"${result.email}","${status}","${syntax}","${mx}","${disposable}","${probablyInvalid}","${messages}"\n`;
+            });
+            
+            // Créer le lien de téléchargement
+            const encodedUri = encodeURI(csvContent);
+            const link = document.createElement("a");
+            link.setAttribute("href", encodedUri);
+            link.setAttribute("download", "email_verification_results.csv");
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        }
+        
+        document.addEventListener('DOMContentLoaded', function() {
+            // Le reste du code JavaScript est géré dans main.js
+        });
+    </script>
+    <script src="/js/main.js"></script>
+</body>
+</html> 

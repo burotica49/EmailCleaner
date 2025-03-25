@@ -1,0 +1,457 @@
+:root {
+    --primary-color: #4F46E5;
+    --primary-hover: #4338CA;
+    --secondary-color: #10B981;
+    --secondary-hover: #059669;
+    --danger-color: #EF4444;
+    --warning-color: #F59E0B;
+    --orange-color: #F97316;
+    --light-bg: #F9FAFB;
+    --card-bg: #FFFFFF;
+    --text-dark: #1F2937;
+    --text-muted: #6B7280;
+    --border-color: #E5E7EB;
+    --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+    --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+    --font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+}
+
+/* Base Styles */
+body {
+    background-color: var(--light-bg);
+    font-family: var(--font-family);
+    color: var(--text-dark);
+    line-height: 1.6;
+}
+
+a {
+    color: var(--primary-color);
+    text-decoration: none;
+    transition: color 0.2s ease-in-out;
+}
+
+a:hover {
+    color: var(--primary-hover);
+    text-decoration: none;
+}
+
+/* Header & Branding */
+.app-header {
+    padding: 1.5rem 0;
+    background: linear-gradient(135deg, var(--primary-color), var(--primary-hover));
+    margin-bottom: 2rem;
+    color: white;
+    border-radius: 0 0 15px 15px;
+    box-shadow: var(--shadow-md);
+    border-radius: 0;
+}
+
+.app-title {
+    font-weight: 700;
+    letter-spacing: -0.025em;
+}
+
+.app-subtitle {
+    opacity: 0.9;
+    font-weight: 300;
+}
+
+/* Cards */
+.card {
+    border: none;
+    border-radius: 12px;
+    overflow: hidden;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    box-shadow: var(--shadow-md);
+    background-color: var(--card-bg);
+}
+
+.card:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-lg);
+}
+
+.card-header {
+    border-bottom: 1px solid var(--border-color);
+    background-color: var(--card-bg);
+    font-weight: 600;
+    padding: 1.25rem 1.5rem;
+}
+
+.card-header.primary-gradient {
+    background: linear-gradient(135deg, var(--primary-color), var(--primary-hover));
+    color: white;
+    border-bottom: none;
+}
+
+.card-body {
+    padding: 1.5rem;
+}
+
+.card-footer {
+    border-top: 1px solid var(--border-color);
+    background-color: var(--card-bg);
+    padding: 1.25rem 1.5rem;
+}
+
+/* Buttons */
+.btn {
+    border-radius: 8px;
+    font-weight: 500;
+    padding: 0.625rem 1.25rem;
+    transition: all 0.2s ease-in-out;
+    box-shadow: var(--shadow-sm);
+}
+
+.btn-lg {
+    padding: 0.75rem 1.5rem;
+    font-size: 1.125rem;
+}
+
+.btn-primary {
+    background-color: var(--primary-color);
+    border-color: var(--primary-color);
+}
+
+.btn-primary:hover, .btn-primary:focus {
+    background-color: var(--primary-hover);
+    border-color: var(--primary-hover);
+    transform: translateY(-1px);
+    box-shadow: var(--shadow-md);
+}
+
+.btn-success {
+    background-color: var(--secondary-color);
+    border-color: var(--secondary-color);
+}
+
+.btn-success:hover, .btn-success:focus {
+    background-color: var(--secondary-hover);
+    border-color: var(--secondary-hover);
+    transform: translateY(-1px);
+    box-shadow: var(--shadow-md);
+}
+
+.btn-outline-primary {
+    color: var(--primary-color);
+    border-color: var(--primary-color);
+}
+
+.btn-outline-primary:hover {
+    background-color: var(--primary-color);
+    color: white;
+}
+
+/* Form Elements */
+.form-control {
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    padding: 0.75rem 1rem;
+    transition: border-color 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+}
+
+.form-control:focus {
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.2);
+}
+
+.form-label {
+    font-weight: 500;
+    margin-bottom: 0.5rem;
+    color: var(--text-dark);
+}
+
+.form-text {
+    color: var(--text-muted);
+    font-size: 0.875rem;
+}
+
+/* File Upload Styles */
+.file-upload-container {
+    position: relative;
+    margin-bottom: 1.5rem;
+}
+
+.drop-zone {
+    background-color: rgba(79, 70, 229, 0.03);
+    border: 2px dashed rgba(79, 70, 229, 0.3);
+    border-radius: 12px;
+    min-height: 200px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    margin-bottom: 1rem;
+}
+
+.drop-zone:hover, .drop-zone.dragover {
+    background-color: rgba(79, 70, 229, 0.08);
+    border-color: var(--primary-color);
+}
+
+.upload-icon svg {
+    color: var(--primary-color);
+    margin-bottom: 1rem;
+    width: 64px;
+    height: 64px;
+}
+
+.drop-text {
+    color: var(--text-dark);
+    font-weight: 500;
+    margin-bottom: 0.25rem;
+}
+
+.selected-file-name {
+    color: var(--secondary-color);
+    font-weight: 500;
+    padding: 0.5rem 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    max-width: 100%;
+}
+
+/* Stats & Progress Bars */
+.stats {
+    padding: 0.5rem 0;
+}
+
+.stat-item {
+    margin-bottom: 1.25rem;
+}
+
+.stat-item .fw-bold {
+    font-size: 1.125rem;
+}
+
+.progress {
+    height: 10px;
+    border-radius: 6px;
+    overflow: hidden;
+    background-color: rgba(0, 0, 0, 0.05);
+    box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.05);
+}
+
+.progress-bar {
+    border-radius: 6px;
+    transition: width 0.6s ease;
+}
+
+.bg-success {
+    background-color: var(--secondary-color) !important;
+}
+
+.bg-danger {
+    background-color: var(--danger-color) !important;
+}
+
+.bg-warning {
+    background-color: var(--warning-color) !important;
+}
+
+.bg-orange {
+    background-color: var(--orange-color) !important;
+}
+
+.bg-primary {
+    background-color: var(--primary-color) !important;
+}
+
+/* Status Badges */
+.badge {
+    font-weight: 500;
+    padding: 0.4em 0.8em;
+    border-radius: 6px;
+    box-shadow: var(--shadow-sm);
+}
+
+/* Tables */
+.table {
+    margin-bottom: 0;
+}
+
+.table th {
+    background-color: rgba(0, 0, 0, 0.02);
+    font-weight: 600;
+    color: var(--text-dark);
+    padding: 1rem;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.table td {
+    padding: 1rem;
+    vertical-align: middle;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.table-success {
+    background-color: rgba(16, 185, 129, 0.1) !important;
+}
+
+.table-warning {
+    background-color: rgba(245, 158, 11, 0.1) !important;
+}
+
+.table-danger {
+    background-color: rgba(239, 68, 68, 0.1) !important;
+}
+
+.table-orange {
+    background-color: rgba(253, 126, 20, 0.15) !important;
+}
+
+.table-hover tbody tr:hover {
+    background-color: rgba(0, 0, 0, 0.02);
+}
+
+/* Popover Customization */
+.popover {
+    border-radius: 8px;
+    box-shadow: var(--shadow-md);
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    font-family: var(--font-family);
+}
+
+.popover-header {
+    background-color: rgba(0, 0, 0, 0.02);
+    border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+    font-weight: 600;
+}
+
+/* Footer */
+footer {
+    margin-top: 3rem;
+    padding: 2rem 0;
+    background-color: #F3F4F6;
+    color: var(--text-muted);
+    border-top: 1px solid var(--border-color);
+}
+
+/* Responsive Adjustments */
+@media (max-width: 768px) {
+    .card-header {
+        padding: 1rem;
+    }
+
+    .card-body, .card-footer {
+        padding: 1.25rem;
+    }
+
+    .app-header {
+        margin-bottom: 1.5rem;
+    }
+    
+    .input-group-sm {
+        width: 100% !important;
+    }
+}
+
+/* Animations */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.animate-fade-in {
+    animation: fadeIn 0.5s ease-out forwards;
+}
+
+/* Loading Spinner */
+.spinner-container {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(255, 255, 255, 0.8);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+.spinner-content {
+    text-align: center;
+    background-color: white;
+    padding: 2rem;
+    border-radius: 12px;
+    box-shadow: var(--shadow-lg);
+}
+
+.spinner-border {
+    width: 3rem;
+    height: 3rem;
+    color: var(--primary-color);
+}
+
+/* Styles pour la zone de téléchargement */
+.file-upload-container {
+    position: relative;
+}
+
+.drop-zone {
+    transition: all 0.3s ease;
+    min-height: 150px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    cursor: pointer;
+}
+
+.drop-zone:hover {
+    background-color: #f8f9fa;
+    border-color: #4361ee !important;
+}
+
+.border-dashed {
+    border-style: dashed !important;
+}
+
+.selected-file-name {
+    color: #198754;
+    font-weight: 500;
+    padding: 5px 0;
+    min-height: 30px;
+}
+
+/* Styles pour le badge orange pour les emails probablement invalides */
+.bg-orange {
+    background-color: #fd7e14 !important;
+}
+
+/* Ajout dans les statistiques */
+.stat-item.probably-invalid {
+    margin-bottom: 1rem;
+}
+
+.stat-item.probably-invalid .progress-bar {
+    background-color: #fd7e14 !important;
+}
+
+/* Pour les lignes du tableau */
+.table-orange {
+    background-color: rgba(253, 126, 20, 0.15) !important;
+}
+
+/* Styles plus spécifiques pour les lignes orange */
+tr.table-orange {
+    background-color: rgba(253, 126, 20, 0.15) !important;
+}
+table tr.table-orange td {
+    background-color: rgba(253, 126, 20, 0.15) !important;
+}
+tbody tr.table-orange {
+    background-color: rgba(253, 126, 20, 0.15) !important;
+} 
+
+.text-white {
+    color: white !important;
+}
+
+.text-black {
+    color: black !important;
+}

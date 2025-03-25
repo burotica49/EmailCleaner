@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Email Cleaner | Nettoyage Intelligent de Listes d'Emails</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+    <!-- Header -->
+    <header class="app-header">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-md-8 text-md-start text-center">
+                    <h1 class="app-title display-5 mb-1">Email Cleaner</h1>
+                    <p class="app-subtitle mb-0">Nettoyage professionnel de vos listes de diffusion en quelques clics</p>
+                </div>
+                <div class="col-md-4 text-md-end text-center mt-3 mt-md-0">
+                    <span class="badge bg-white text-primary fs-6 px-3 py-2 shadow-sm">
+                        <i class="bi bi-shield-check me-1"></i> Vérification intelligente
+                    </span>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main class="container py-4 animate-fade-in">
+        <div class="row justify-content-center">
+            <div class="col-lg-8">
+                <!-- Upload Card -->
+                <div class="card mb-4 shadow">
+                    <div class="card-header primary-gradient">
+                        <h2 class="h4 mb-0">Nettoyer ma liste d'emails</h2>
+                    </div>
+                    <div class="card-body">
+                        <div class="text-center mb-4">
+                            <img src="/img/cleanmailing.jpg" alt="Email Verification" class="img-fluid mb-3" style="max-height: 180px;">
+                            <p class="lead">Téléchargez votre fichier pour vérifier la validité de vos adresses email</p>
+                        </div>
+                        
+                        <form action="/verify" method="POST" enctype="multipart/form-data" id="emailForm">
+                            <div class="file-upload-container">
+                                <label for="emailFile" class="form-label">
+                                    <i class="bi bi-file-earmark-text me-1"></i> Fichier d'emails
+                                </label>
+                                <input class="form-control visually-hidden" type="file" id="emailFile" name="emailFile" required accept=".txt,.xlsx,.csv">
+                                
+                                <div id="dropZone" class="drop-zone">
+                                    <div class="upload-icon">
+                                        <i class="bi bi-cloud-arrow-up-fill fs-1"></i>
+                                    </div>
+                                    <div class="drop-text">Glissez votre fichier ici</div>
+                                    <div class="text-muted small">ou cliquez pour sélectionner</div>
+                                </div>
+                                
+                                <div id="selectedFileName" class="selected-file-name"></div>
+                                
+                                <div class="form-text">
+                                    <i class="bi bi-info-circle me-1"></i> Formats acceptés: fichiers TXT, XLSX ou CSV contenant des adresses email.
+                                </div>
+                            </div>
+                            
+                            <div class="d-grid gap-2 mt-4">
+                                <button type="submit" class="btn btn-primary btn-lg" id="submitButton">
+                                    <i class="bi bi-check2-circle me-2"></i>
+                                    <span>Analyser mes emails</span>
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+                
+                <!-- Features Card -->
+                <div class="card shadow">
+                    <div class="card-header">
+                        <h3 class="h5 mb-0">
+                            <i class="bi bi-stars me-2 text-warning"></i>
+                            Fonctionnalités avancées
+                        </h3>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <div class="d-flex">
+                                    <div class="me-3">
+                                        <div class="feature-icon bg-primary bg-opacity-10 p-2 rounded-circle text-center" style="width: 40px; height: 40px;">
+                                            <i class="bi bi-check2-all text-white"></i>
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <h4 class="h6 mb-1">Validation de syntaxe</h4>
+                                        <p class="text-muted small mb-0">Détection précise des erreurs de format d'adresse</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <div class="d-flex">
+                                    <div class="me-3">
+                                        <div class="feature-icon bg-primary bg-opacity-10 p-2 rounded-circle text-center" style="width: 40px; height: 40px;">
+                                            <i class="bi bi-hdd-network text-white"></i>
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <h4 class="h6 mb-1">Vérification MX</h4>
+                                        <p class="text-muted small mb-0">Contrôle des enregistrements DNS du domaine</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <div class="d-flex">
+                                    <div class="me-3">
+                                        <div class="feature-icon bg-warning bg-opacity-10 p-2 rounded-circle text-center" style="width: 40px; height: 40px;">
+                                            <i class="bi bi-shield-exclamation text-white"></i>
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <h4 class="h6 mb-1">Détection d'emails jetables</h4>
+                                        <p class="text-muted small mb-0">Identification des domaines temporaires</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <div class="d-flex">
+                                    <div class="me-3">
+                                        <div class="feature-icon bg-danger bg-opacity-10 p-2 rounded-circle text-center" style="width: 40px; height: 40px;">
+                                            <i class="bi bi-mailbox text-white"></i>
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <h4 class="h6 mb-1">Vérification des boîtes</h4>
+                                        <p class="text-muted small mb-0">Validation approfondie de l'existence des boîtes mail</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <div class="d-flex">
+                                    <div class="me-3">
+                                        <div class="feature-icon bg-success bg-opacity-10 p-2 rounded-circle text-center" style="width: 40px; height: 40px;">
+                                            <i class="bi bi-graph-up-arrow text-white"></i>
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <h4 class="h6 mb-1">Rapport détaillé</h4>
+                                        <p class="text-muted small mb-0">Statistiques complètes et visualisations</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <div class="d-flex">
+                                    <div class="me-3">
+                                        <div class="feature-icon bg-success bg-opacity-10 p-2 rounded-circle text-center" style="width: 40px; height: 40px;">
+                                            <i class="bi bi-file-earmark-arrow-down text-white"></i>
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <h4 class="h6 mb-1">Export CSV</h4>
+                                        <p class="text-muted small mb-0">Téléchargement des résultats pour utilisation ultérieure</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+    
+    <!-- Loading Spinner (Hidden by default) -->
+    <div class="spinner-container" id="loadingSpinner" style="display: none;">
+        <div class="spinner-content">
+            <div class="spinner-border mb-3" role="status"></div>
+            <h5>Vérification en cours...</h5>
+            <p class="text-muted">Nous analysons vos adresses email. Merci de patienter.</p>
+        </div>
+    </div>
+    
+    <footer>
+        <div class="container text-center">
+            <p class="mb-0">
+                <i class="bi bi-envelope-check me-2"></i> 
+                Email Cleaner &copy; <%= new Date().getFullYear() %> | Nettoyage intelligent de listes d'emails
+            </p>
+        </div>
+    </footer>
+    
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="/js/main.js"></script>
+</body>
+</html> 
