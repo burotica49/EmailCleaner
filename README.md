@@ -23,8 +23,8 @@ Application web pour nettoyer et valider des listes d'emails à partir de fichie
 
 1. Clonez ce dépôt :
    ```
-   git clone https://github.com/votre-utilisateur/nettoyeur-liste-emails.git
-   cd nettoyeur-liste-emails
+   git clone https://github.com/burotica49/EmailCleaner.git
+   cd EmailCleaner
    ```
 
 2. Installez les dépendances :
