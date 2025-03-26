@@ -9,6 +9,10 @@ const dns = require('dns');
 const util = require('util');
 const dnsPromises = dns.promises;
 
+// Lire la version depuis package.json
+const packageJson = require('./package.json');
+const appVersion = packageJson.version;
+
 const app = express();
 const port = process.env.PORT || 8883;
 
@@ -44,7 +48,7 @@ const upload = multer({
 
 // Routes
 app.get('/', (req, res) => {
-  res.render('index');
+  res.render('index', { version: appVersion });
 });
 
 // Fonction pour extraire des emails d'un fichier
@@ -95,6 +99,7 @@ async function extractEmails(filePath) {
 // Fonction pour vérifier un email
 async function verifyEmail(email) {
   try {
+    console.log('verifyEmail',email);
     const emailValidator = new EmailValidator();
     const result = { 
       email, 
@@ -154,11 +159,15 @@ async function verifyEmail(email) {
     // Vérification plus approfondie (optionnelle)
     let deepVerificationSucceeded = false;
     try {
+      console.log('approfondie',email);
       const { validDomain, validMailbox } = await emailValidator.verify(email);
+
       if (validDomain) {
         result.mx = true;
         mxValid = true;
       }
+      console.log(validDomain);
+      
       
       if (validMailbox) {
         deepVerificationSucceeded = true;
@@ -167,6 +176,8 @@ async function verifyEmail(email) {
         result.probablyInvalid = true;
         result.messages.push('Boîte mail probablement invalide');
       }
+      console.log(validMailbox);
+
     } catch (error) {
       // Ne pas considérer un échec de la vérification approfondie comme un critère d'invalidité
       result.messages.push('Vérification approfondie échouée: ' + error.message);
@@ -242,7 +253,7 @@ app.post('/verify', upload.single('emailFile'), async (req, res) => {
     await fs.unlink(req.file.path);
 
     // Renvoyer les résultats et les statistiques
-    res.render('results', { results, stats });
+    res.render('results', { results, stats, version: appVersion });
   } catch (error) {
     console.error('Erreur lors du traitement du fichier:', error);
     res.status(500).send('Erreur lors du traitement du fichier: ' + error.message);
