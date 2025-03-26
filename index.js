@@ -17,6 +17,12 @@ const appVersion = packageJson.version;
 const app = express();
 const port = process.env.PORT || 8883;
 
+// Map pour stocker les progressions
+const progressMap = new Map();
+
+// Map pour stocker les résultats temporaires
+const resultsMap = new Map();
+
 // Configuration
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -48,46 +54,15 @@ const upload = multer({
   }
 });
 
-// Map pour stocker les connexions SSE par ID de session
-const clients = new Map();
-
-// Route pour les événements SSE
-app.get('/progress-stream', (req, res) => {
-  const sessionId = req.query.sessionId;
-  
-  res.writeHead(200, {
-    'Content-Type': 'text/event-stream',
-    'Cache-Control': 'no-cache',
-    'Connection': 'keep-alive',
-    'Access-Control-Allow-Origin': '*'
-  });
-
-  // Envoyer un événement initial
-  const initialData = {
-    progress: 0,
-    processed: 0,
-    total: 0
-  };
-  res.write(`data: ${JSON.stringify(initialData)}\n\n`);
-
-  // Garder la connexion en vie
-  const keepAlive = setInterval(() => {
-    res.write(':\n\n');
-  }, 30000);
-
-  // Stocker la connexion
-  clients.set(sessionId, res);
-
-  // Nettoyer à la déconnexion
-  req.on('close', () => {
-    clients.delete(sessionId);
-    clearInterval(keepAlive);
-  });
-});
-
 // Routes
 app.get('/', (req, res) => {
   res.render('index', { version: appVersion });
+});
+
+// Route pour obtenir la progression
+app.get('/progress/:sessionId', (req, res) => {
+    const progress = progressMap.get(req.params.sessionId) || { progress: 0, processed: 0, total: 0 };
+    res.json(progress);
 });
 
 // Route pour afficher les résultats
@@ -275,92 +250,134 @@ async function verifyEmail(email) {
 // Route pour le traitement des fichiers
 app.post('/verify', upload.single('emailFile'), async (req, res) => {
     if (!req.file) {
-        return res.status(400).send('Aucun fichier n\'a été téléchargé.');
+        return res.status(400).json({ error: 'Aucun fichier n\'a été téléchargé.' });
     }
 
-    const sessionId = req.body.sessionId;
-    
+    const sessionId = Date.now().toString();
+    progressMap.set(sessionId, { progress: 0, processed: 0, total: 0 });
+
     try {
         const emails = await extractEmails(req.file.path);
         
         if (emails.length === 0) {
-            return res.status(400).send('Aucune adresse email valide n\'a été trouvée dans le fichier.');
+            progressMap.delete(sessionId);
+            return res.status(400).json({ error: 'Aucune adresse email valide n\'a été trouvée dans le fichier.' });
         }
 
-        // Limiter le nombre d'emails pour la démo (facultatif)
+        // Envoyer l'ID de session immédiatement
+        res.json({ sessionId });
+
+        // Limiter le nombre d'emails pour la démo
         const maxEmails = 5000;
         const emailsToVerify = emails.slice(0, maxEmails);
         
-        // Vérifier les emails en série avec un délai
-        const results = [];
-        let processedCount = 0;
-        
-        // Fonction pour envoyer la progression
-        const sendProgress = (processed, total) => {
-            const client = clients.get(sessionId);
-            if (client) {
-                const progress = Math.round((processed / total) * 100);
-                const data = {
-                    progress,
-                    processed,
-                    total
+        // Mettre à jour le total immédiatement
+        progressMap.set(sessionId, { progress: 0, processed: 0, total: emailsToVerify.length });
+
+        // Créer une promesse pour le traitement des emails
+        const processEmails = async () => {
+            try {
+                const results = [];
+                let processedCount = 0;
+                
+                for (const email of emailsToVerify) {
+                    const result = await verifyEmail(email);
+                    results.push(result);
+                    processedCount++;
+                    
+                    // Mettre à jour la progression
+                    const progress = Math.round((processedCount / emailsToVerify.length) * 100);
+                    progressMap.set(sessionId, { 
+                        progress, 
+                        processed: processedCount, 
+                        total: emailsToVerify.length 
+                    });
+                    
+                    // Ajouter un délai de 100ms entre chaque vérification
+                    await new Promise(resolve => setTimeout(resolve, 100));
+                }
+
+                // Générer des statistiques
+                const stats = {
+                    total: results.length,
+                    valid: results.filter(r => r.isValid).length,
+                    invalid: results.filter(r => !r.isValid).length,
+                    disposable: results.filter(r => r.disposable).length,
+                    probablyInvalid: results.filter(r => r.probablyInvalid).length,
+                    syntaxErrors: results.filter(r => !r.syntax).length,
+                    mxErrors: results.filter(r => !r.mx).length
                 };
-                client.write(`data: ${JSON.stringify(data)}\n\n`);
+
+                // Nettoyer le fichier après traitement
+                await fs.unlink(req.file.path);
+
+                // Stocker les résultats dans la Map
+                resultsMap.set(sessionId, { results, stats });
+
+                // Mettre à jour la progression avec l'URL de redirection
+                progressMap.set(sessionId, { 
+                    progress: 100, 
+                    processed: emailsToVerify.length, 
+                    total: emailsToVerify.length,
+                    redirect: `/complete/${sessionId}`
+                });
+
+                // Définir un timeout pour nettoyer les données
+                setTimeout(() => {
+                    resultsMap.delete(sessionId);
+                    progressMap.delete(sessionId);
+                }, 3600000); // 1 heure
+
+            } catch (error) {
+                console.error('Erreur lors du traitement des emails:', error);
+                progressMap.set(sessionId, { 
+                    progress: 100,
+                    processed: emailsToVerify.length,
+                    total: emailsToVerify.length,
+                    error: 'Erreur lors du traitement du fichier: ' + error.message 
+                });
             }
         };
 
-        // Première mise à jour de progression
-        sendProgress(0, emailsToVerify.length);
+        // Démarrer le traitement en arrière-plan
+        processEmails();
 
-        for (const email of emailsToVerify) {
-            const result = await verifyEmail(email);
-            results.push(result);
-            processedCount++;
-            
-            // Envoyer la progression
-            sendProgress(processedCount, emailsToVerify.length);
-            
-            // Ajouter un délai de 100ms entre chaque vérification
-            await new Promise(resolve => setTimeout(resolve, 100));
-        }
-        
-        // Générer des statistiques
-        const stats = {
-            total: results.length,
-            valid: results.filter(r => r.isValid).length,
-            invalid: results.filter(r => !r.isValid).length,
-            disposable: results.filter(r => r.disposable).length,
-            probablyInvalid: results.filter(r => r.probablyInvalid).length,
-            syntaxErrors: results.filter(r => !r.syntax).length,
-            mxErrors: results.filter(r => !r.mx).length
-        };
-
-        // Nettoyer le fichier après traitement
-        await fs.unlink(req.file.path);
-
-        // Fermer la connexion SSE
-        const client = clients.get(sessionId);
-        if (client) {
-            client.write('data: {"completed": true}\n\n');
-            client.end();
-            clients.delete(sessionId);
-        }
-
-        // Stocker les résultats dans un cookie
-        res.cookie('emailResults', JSON.stringify({ results, stats }), {
-            maxAge: 3600000, // 1 heure
-            httpOnly: true,
-            sameSite: 'strict',
-            path: '/'
-        });
-
-        res.json({ redirect: '/results' });
     } catch (error) {
         console.error('Erreur lors du traitement du fichier:', error);
+        progressMap.delete(sessionId);
         res.status(500).json({ 
             error: 'Erreur lors du traitement du fichier: ' + error.message 
         });
     }
+});
+
+// Route pour la complétion du traitement
+app.get('/complete/:sessionId', (req, res) => {
+    const sessionId = req.params.sessionId;
+    const resultsData = resultsMap.get(sessionId);
+
+    if (!resultsData) {
+        console.log('Aucun résultat trouvé pour la session:', sessionId);
+        return res.redirect('/');
+    }
+
+    console.log('Résultats trouvés pour la session:', sessionId);
+    const { results, stats } = resultsData;
+
+    // Définir le cookie avec les résultats
+    res.cookie('emailResults', JSON.stringify({ results, stats }), {
+        maxAge: 3600000, // 1 heure
+        httpOnly: true,
+        sameSite: 'strict',
+        path: '/'
+    });
+
+    // Nettoyer les données
+    resultsMap.delete(sessionId);
+    progressMap.delete(sessionId);
+
+    // Rediriger vers la page de résultats
+    res.redirect('/results');
 });
 
 // Démarrer le serveur

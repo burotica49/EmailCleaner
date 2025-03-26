@@ -1,6 +1,6 @@
 {
   "name": "bulkverifieremail",
-  "version": "1.0.4",
+  "version": "1.0.5",
   "description": "Application pour nettoyer et valider des listes d'emails à partir de fichiers TXT, CSV ou XLSX",
   "main": "index.js",
   "scripts": {

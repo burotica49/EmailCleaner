@@ -94,10 +94,8 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Gestion de la soumission du formulaire
     if (emailForm) {
-        let eventSource = null;
-
         emailForm.addEventListener('submit', async function(e) {
-            e.preventDefault(); // Empêcher la soumission par défaut
+            e.preventDefault();
 
             if (fileInput && fileInput.files.length === 0) {
                 // Animation d'erreur de la zone de dépôt
@@ -116,17 +114,6 @@ document.addEventListener('DOMContentLoaded', function() {
                 return false;
             }
 
-            // Créer un ID de session unique
-            const sessionId = Date.now().toString();
-            
-            // Fermer l'ancienne connexion SSE si elle existe
-            if (eventSource) {
-                eventSource.close();
-            }
-            
-            // Établir la connexion SSE avant la soumission
-            eventSource = new EventSource(`/progress-stream?sessionId=${sessionId}`);
-            
             // Afficher la barre de progression
             if (loadingSpinner) {
                 loadingSpinner.style.display = 'flex';
@@ -150,65 +137,105 @@ document.addEventListener('DOMContentLoaded', function() {
                 submitButton.disabled = true;
             }
 
-            // Gérer les événements SSE
-            eventSource.onmessage = function(event) {
-                try {
-                    const data = JSON.parse(event.data);
-                    console.log('Progress data:', data);
-                    
-                    if (data.completed) {
-                        // Le traitement est terminé, fermer la connexion SSE
-                        eventSource.close();
-                        return;
-                    }
-                    
-                    if (progressBar && typeof data.progress === 'number') {
-                        progressBar.style.width = `${data.progress}%`;
-                        progressBar.setAttribute('aria-valuenow', data.progress);
-                        progressBar.textContent = `${data.progress}%`;
-                    }
-                    if (progressDetails && typeof data.processed === 'number' && typeof data.total === 'number') {
-                        progressDetails.textContent = `${data.processed} sur ${data.total} emails vérifiés`;
-                    }
-                } catch (error) {
-                    console.error('Erreur lors du parsing des données de progression:', error);
-                }
-            };
-            
-            eventSource.onerror = function(error) {
-                console.error('Erreur SSE:', error);
-                eventSource.close();
-            };
-
             // Créer les données du formulaire
             const formData = new FormData(emailForm);
-            formData.append('sessionId', sessionId);
 
             try {
-                // Envoyer le formulaire via fetch
+                // Envoyer le formulaire
                 const response = await fetch(emailForm.action, {
                     method: 'POST',
                     body: formData
                 });
 
                 if (!response.ok) {
-                    throw new Error('Erreur lors de l\'envoi du fichier');
+                    const errorData = await response.json();
+                    throw new Error(errorData.error || 'Erreur lors de l\'envoi du fichier');
                 }
 
-                const result = await response.json();
-                
-                if (result.redirect) {
-                    // Rediriger vers la page de résultats
-                    window.location.href = result.redirect;
-                } else if (result.error) {
-                    throw new Error(result.error);
+                const data = await response.json();
+                if (data.error) {
+                    throw new Error(data.error);
+                }
+
+                // Démarrer la vérification de progression
+                if (data.sessionId) {
+                    let completed = false;
+                    let redirectAttempted = false;
+
+                    const checkProgress = async () => {
+                        if (completed) return;
+
+                        try {
+                            const progressResponse = await fetch(`/progress/${data.sessionId}`);
+                            if (!progressResponse.ok) {
+                                throw new Error('Erreur lors de la récupération de la progression');
+                            }
+
+                            const progressData = await progressResponse.json();
+                            console.log('Progress data:', progressData); // Debug log
+                            
+                            if (progressBar) {
+                                progressBar.style.width = `${progressData.progress}%`;
+                                progressBar.setAttribute('aria-valuenow', progressData.progress);
+                                progressBar.textContent = `${progressData.progress}%`;
+                            }
+                            if (progressDetails) {
+                                progressDetails.textContent = `${progressData.processed} sur ${progressData.total} emails vérifiés`;
+                            }
+
+                            // Vérifier s'il y a une erreur
+                            if (progressData.error) {
+                                throw new Error(progressData.error);
+                            }
+
+                            // Vérifier s'il y a une redirection
+                            if (progressData.redirect && !redirectAttempted) {
+                                redirectAttempted = true;
+                                completed = true;
+                                console.log('Redirection URL trouvée:', progressData.redirect);
+                                window.location.replace(progressData.redirect);
+                                return;
+                            }
+
+                            // Continuer la vérification
+                            if (!completed) {
+                                if (progressData.progress < 100) {
+                                    setTimeout(checkProgress, 1000);
+                                } else if (!redirectAttempted) {
+                                    console.log('100% atteint, attente de l\'URL de redirection...');
+                                    setTimeout(checkProgress, 500);
+                                }
+                            }
+                        } catch (error) {
+                            console.error('Erreur lors de la vérification de la progression:', error);
+                            if (progressDetails) {
+                                progressDetails.textContent = error.message;
+                            }
+                            completed = true;
+                            // Réactiver le bouton en cas d'erreur
+                            if (submitButton) {
+                                const buttonText = submitButton.querySelector('span');
+                                if (buttonText) {
+                                    buttonText.textContent = 'Vérifier les emails';
+                                }
+                                submitButton.disabled = false;
+                            }
+                        }
+                    };
+
+                    // Démarrer la vérification de progression
+                    checkProgress();
                 }
             } catch (error) {
                 console.error('Erreur:', error);
                 if (progressDetails) {
-                    progressDetails.textContent = 'Erreur lors du traitement. Veuillez réessayer.';
+                    progressDetails.textContent = error.message;
                 }
                 if (submitButton) {
+                    const buttonText = submitButton.querySelector('span');
+                    if (buttonText) {
+                        buttonText.textContent = 'Vérifier les emails';
+                    }
                     submitButton.disabled = false;
                 }
             }
