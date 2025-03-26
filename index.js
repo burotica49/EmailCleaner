@@ -231,20 +231,59 @@ async function verifyEmail(email) {
     logger.debug('- Vérification approfondie...');
     let deepVerificationSucceeded = false;
     try {
+      const emailValidator = new EmailValidator({
+        timeout: 10000, // timeout global de 10 secondes
+        verifyMxRecord: true,
+        verifyMailbox: true,  // Réactiver la vérification SMTP
+        // Timeouts spécifiques
+        smtpTimeout: 10000,     // timeout pour la connexion SMTP
+        dnsTimeout: 5000,       // timeout pour les requêtes DNS
+        maxConnections: 5,      // nombre maximum de connexions simultanées
+        // Options SMTP
+        port: 587,              // port SMTP avec STARTTLS
+        sender: 'verify@votredomaine.com', // adresse d'envoi pour le SMTP
+        // Options de sécurité SMTP
+        secure: false,          // false pour STARTTLS
+        ignoreTLS: false,       // Ne pas ignorer TLS
+        requireTLS: true,       // Exiger TLS
+        // Gestion des erreurs
+        maxAttempts: 2,        // nombre de tentatives en cas d'échec
+        retryDelay: 1000      // délai entre les tentatives (1 seconde)
+      });
+
+      logger.debug('Configuration email-validator:', {
+        timeout: 10000,
+        smtpTimeout: 10000,
+        dnsTimeout: 5000,
+        maxConnections: 5,
+        port: 587,
+        verifyMailbox: true,
+        secure: false,
+        requireTLS: true
+      });
+
       const { validDomain, validMailbox } = await emailValidator.verify(email);
       logger.debug(`  → Domaine valide: ${validDomain}`);
       logger.debug(`  → Boîte mail valide: ${validMailbox}`);
+      logger.debug(`  → Type de retour validMailbox: ${typeof validMailbox}`);
 
       if (validDomain) {
         result.mx = true;
         mxValid = true;
       }
       
-      if (validMailbox) {
+      if (validMailbox === true) {
+        // Boîte mail explicitement valide
         deepVerificationSucceeded = true;
+        result.probablyInvalid = false;
       } else if (validMailbox === false) {
+        // Boîte mail explicitement invalide
         result.probablyInvalid = true;
         result.messages.push('Boîte mail probablement invalide');
+      } else if (validMailbox === null) {
+        // Vérification impossible (timeout, blocage, etc.)
+        logger.debug('  → Vérification approfondie impossible, on se base sur les autres critères');
+        // On ne modifie pas probablyInvalid, on se base sur les autres critères
       }
 
     } catch (error) {
