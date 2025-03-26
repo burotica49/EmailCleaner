@@ -23,8 +23,8 @@ Application web pour nettoyer et valider des listes d'emails à partir de fichie
 
 1. Clonez ce dépôt :
    ```
-   git clone https://github.com/votre-utilisateur/nettoyeur-liste-emails.git
-   cd nettoyeur-liste-emails
+   git clone https://github.com/burotica49/EmailCleaner.git
+   cd EmailCleaner
    ```
 
 2. Installez les dépendances :
@@ -39,7 +39,15 @@ Application web pour nettoyer et valider des listes d'emails à partir de fichie
 
 4. Accédez à l'application via votre navigateur à l'adresse :
    ```
-   http://localhost:3000
+   http://localhost:8882
+   ```
+
+Utilisation de PM2
+   ```
+   npm install -g pm2
+   pm2 start index.js --name EmailCleaner
+   pm2 startup
+   pm2 save
    ```
 
 ## Utilisation
