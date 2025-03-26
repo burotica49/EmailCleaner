@@ -8,7 +8,7 @@ const EmailValidator = require('email-deep-validator');
 const dns = require('dns');
 const util = require('util');
 const dnsPromises = dns.promises;
-const session = require('express-session');
+const cookieParser = require('cookie-parser');
 
 // Lire la version depuis package.json
 const packageJson = require('./package.json');
@@ -21,15 +21,8 @@ const port = process.env.PORT || 8883;
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static('public'));
+app.use(cookieParser());
 app.set('view engine', 'ejs');
-
-// Configuration de la session
-app.use(session({
-    secret: 'email-cleaner-secret',
-    resave: false,
-    saveUninitialized: true,
-    cookie: { secure: process.env.NODE_ENV === 'production' }
-}));
 
 // Configuration de Multer pour les téléchargements de fichiers
 const storage = multer.diskStorage({
@@ -99,18 +92,22 @@ app.get('/', (req, res) => {
 
 // Route pour afficher les résultats
 app.get('/results', (req, res) => {
-    const results = req.session?.results;
-    const stats = req.session?.stats;
-    
-    if (!results || !stats) {
-        return res.redirect('/');
+    try {
+        const resultsData = req.cookies.emailResults;
+        if (!resultsData) {
+            return res.redirect('/');
+        }
+
+        const { results, stats } = JSON.parse(resultsData);
+        
+        // Nettoyer le cookie après récupération des données
+        res.clearCookie('emailResults');
+        
+        res.render('results', { results, stats, version: appVersion });
+    } catch (error) {
+        console.error('Erreur lors de la lecture des résultats:', error);
+        res.redirect('/');
     }
-    
-    // Nettoyer la session après avoir récupéré les données
-    delete req.session.results;
-    delete req.session.stats;
-    
-    res.render('results', { results, stats, version: appVersion });
 });
 
 // Fonction pour extraire des emails d'un fichier
@@ -349,9 +346,14 @@ app.post('/verify', upload.single('emailFile'), async (req, res) => {
             clients.delete(sessionId);
         }
 
-        // Stocker les résultats dans la session et rediriger
-        req.session.results = results;
-        req.session.stats = stats;
+        // Stocker les résultats dans un cookie
+        res.cookie('emailResults', JSON.stringify({ results, stats }), {
+            maxAge: 3600000, // 1 heure
+            httpOnly: true,
+            sameSite: 'strict',
+            path: '/'
+        });
+
         res.json({ redirect: '/results' });
     } catch (error) {
         console.error('Erreur lors du traitement du fichier:', error);
