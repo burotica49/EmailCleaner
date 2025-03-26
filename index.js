@@ -232,26 +232,8 @@ async function verifyEmail(email) {
     let deepVerificationSucceeded = false;
     try {
       const emailValidator = new EmailValidator({
-        timeout: 10000, // timeout global de 10 secondes
-        verifyMxRecord: true,
-        verifyMailbox: true,  // Réactiver la vérification SMTP
-        // Timeouts spécifiques
-        smtpTimeout: 10000,     // timeout pour la connexion SMTP
-        dnsTimeout: 5000,       // timeout pour les requêtes DNS
-        maxConnections: 5,      // nombre maximum de connexions simultanées
-        // Options SMTP
-        port: 587,              // port SMTP avec STARTTLS
-        sender: 'verify@votredomaine.com', // adresse d'envoi pour le SMTP
-        // Options de sécurité SMTP
-        secure: false,          // false pour STARTTLS
-        ignoreTLS: false,       // Ne pas ignorer TLS
-        requireTLS: true,       // Exiger TLS
-        // Gestion des erreurs
-        maxAttempts: 2,        // nombre de tentatives en cas d'échec
-        retryDelay: 1000      // délai entre les tentatives (1 seconde)
-      });
-
-      logger.debug('Configuration email-validator:', {
+        verifyDomain: true,
+        verifyMailbox: true,
         timeout: 10000,
         smtpTimeout: 10000,
         dnsTimeout: 5000,
@@ -261,6 +243,17 @@ async function verifyEmail(email) {
         secure: false,
         requireTLS: true
       });
+
+      // logger.debug('Configuration email-validator:', {
+      //   timeout: 10000,
+      //   smtpTimeout: 10000,
+      //   dnsTimeout: 5000,
+      //   maxConnections: 5,
+      //   port: 587,
+      //   verifyMailbox: true,
+      //   secure: false,
+      //   requireTLS: true
+      // });
 
       const { validDomain, validMailbox } = await emailValidator.verify(email);
       logger.debug(`  → Domaine valide: ${validDomain}`);
@@ -282,7 +275,6 @@ async function verifyEmail(email) {
         result.messages.push('Boîte mail probablement invalide');
       } else if (validMailbox === null) {
         // Vérification impossible (timeout, blocage, etc.)
-        result.probablyInvalid = true;
         logger.debug('  → Vérification approfondie impossible');
         // On ne modifie pas probablyInvalid, on se base sur les autres critères
       }
