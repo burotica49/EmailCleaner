@@ -107,7 +107,18 @@ async function verifyEmail(email) {
     };
 
     // Vérification de la syntaxe
-    if (!validator.isEmail(email)) {
+    if (!validator.isEmail(email, {
+      allow_display_name: false,
+      require_display_name: false, 
+      allow_utf8_local_part: true, 
+      require_tld: true,
+      ignore_max_length: false,
+      allow_ip_domain: false, 
+      allow_underscores: false, 
+      domain_specific_validation: true, 
+      blacklisted_chars: '', 
+      host_blacklist: []
+    })) {
       result.messages.push('Syntaxe d\'email invalide');
       return result;
     }
@@ -209,7 +220,7 @@ app.post('/verify', upload.single('emailFile'), async (req, res) => {
     }
 
     // Limiter le nombre d'emails pour la démo (facultatif)
-    const maxEmails = 500;
+    const maxEmails = 5000;
     const emailsToVerify = emails.slice(0, maxEmails);
     
     // Vérifier les emails
