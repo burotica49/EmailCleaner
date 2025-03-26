@@ -5,6 +5,8 @@ document.addEventListener('DOMContentLoaded', function() {
     const emailForm = document.getElementById('emailForm');
     const submitButton = document.getElementById('submitButton');
     const loadingSpinner = document.getElementById('loadingSpinner');
+    const progressBar = document.getElementById('verificationProgress');
+    const progressDetails = document.getElementById('progressDetails');
     
     // Fonction pour mettre à jour l'affichage du nom de fichier
     function updateFileName(file) {
@@ -92,10 +94,12 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Gestion de la soumission du formulaire
     if (emailForm) {
-        emailForm.addEventListener('submit', function(e) {
+        let eventSource = null;
+
+        emailForm.addEventListener('submit', async function(e) {
+            e.preventDefault(); // Empêcher la soumission par défaut
+
             if (fileInput && fileInput.files.length === 0) {
-                e.preventDefault();
-                
                 // Animation d'erreur de la zone de dépôt
                 dropZone.classList.add('border-danger');
                 setTimeout(() => dropZone.classList.remove('border-danger'), 2000);
@@ -111,10 +115,30 @@ document.addEventListener('DOMContentLoaded', function() {
                 
                 return false;
             }
+
+            // Créer un ID de session unique
+            const sessionId = Date.now().toString();
             
-            // Afficher le spinner de chargement
+            // Fermer l'ancienne connexion SSE si elle existe
+            if (eventSource) {
+                eventSource.close();
+            }
+            
+            // Établir la connexion SSE avant la soumission
+            eventSource = new EventSource(`/progress-stream?sessionId=${sessionId}`);
+            
+            // Afficher la barre de progression
             if (loadingSpinner) {
                 loadingSpinner.style.display = 'flex';
+                // Réinitialiser la barre de progression
+                if (progressBar) {
+                    progressBar.style.width = '0%';
+                    progressBar.setAttribute('aria-valuenow', 0);
+                    progressBar.textContent = '0%';
+                }
+                if (progressDetails) {
+                    progressDetails.textContent = 'Démarrage de la vérification...';
+                }
             }
             
             // Modifier le bouton de soumission
@@ -123,20 +147,69 @@ document.addEventListener('DOMContentLoaded', function() {
                 if (buttonText) {
                     buttonText.textContent = 'Traitement en cours...';
                 }
-                
                 submitButton.disabled = true;
+            }
+
+            // Gérer les événements SSE
+            eventSource.onmessage = function(event) {
+                try {
+                    const data = JSON.parse(event.data);
+                    console.log('Progress data:', data);
+                    
+                    if (data.completed) {
+                        // Le traitement est terminé, fermer la connexion SSE
+                        eventSource.close();
+                        return;
+                    }
+                    
+                    if (progressBar && typeof data.progress === 'number') {
+                        progressBar.style.width = `${data.progress}%`;
+                        progressBar.setAttribute('aria-valuenow', data.progress);
+                        progressBar.textContent = `${data.progress}%`;
+                    }
+                    if (progressDetails && typeof data.processed === 'number' && typeof data.total === 'number') {
+                        progressDetails.textContent = `${data.processed} sur ${data.total} emails vérifiés`;
+                    }
+                } catch (error) {
+                    console.error('Erreur lors du parsing des données de progression:', error);
+                }
+            };
+            
+            eventSource.onerror = function(error) {
+                console.error('Erreur SSE:', error);
+                eventSource.close();
+            };
+
+            // Créer les données du formulaire
+            const formData = new FormData(emailForm);
+            formData.append('sessionId', sessionId);
+
+            try {
+                // Envoyer le formulaire via fetch
+                const response = await fetch(emailForm.action, {
+                    method: 'POST',
+                    body: formData
+                });
+
+                if (!response.ok) {
+                    throw new Error('Erreur lors de l\'envoi du fichier');
+                }
+
+                const result = await response.json();
                 
-                // Remplacer l'icône par un spinner
-                const icon = submitButton.querySelector('i');
-                if (icon) {
-                    icon.classList.remove('bi-check2-circle');
-                    icon.classList.add('bi-arrow-repeat', 'spin');
-                } else {
-                    // Ajouter un spinner s'il n'y a pas d'icône
-                    const spinner = document.createElement('span');
-                    spinner.className = 'spinner-border spinner-border-sm me-2';
-                    spinner.setAttribute('role', 'status');
-                    submitButton.prepend(spinner);
+                if (result.redirect) {
+                    // Rediriger vers la page de résultats
+                    window.location.href = result.redirect;
+                } else if (result.error) {
+                    throw new Error(result.error);
+                }
+            } catch (error) {
+                console.error('Erreur:', error);
+                if (progressDetails) {
+                    progressDetails.textContent = 'Erreur lors du traitement. Veuillez réessayer.';
+                }
+                if (submitButton) {
+                    submitButton.disabled = false;
                 }
             }
         });
