@@ -282,7 +282,8 @@ async function verifyEmail(email) {
         result.messages.push('Boîte mail probablement invalide');
       } else if (validMailbox === null) {
         // Vérification impossible (timeout, blocage, etc.)
-        logger.debug('  → Vérification approfondie impossible, on se base sur les autres critères');
+        result.probablyInvalid = true;
+        logger.debug('  → Vérification approfondie impossible');
         // On ne modifie pas probablyInvalid, on se base sur les autres critères
       }
 
