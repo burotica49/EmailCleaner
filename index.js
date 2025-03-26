@@ -9,6 +9,31 @@ const dns = require('dns');
 const util = require('util');
 const dnsPromises = dns.promises;
 const cookieParser = require('cookie-parser');
+const winston = require('winston');
+
+// Configuration du logger
+const logger = winston.createLogger({
+    level: 'debug',
+    format: winston.format.combine(
+        winston.format.timestamp(),
+        winston.format.printf(({ timestamp, level, message }) => {
+            return `${timestamp} ${level}: ${message}`;
+        })
+    ),
+    transports: [
+        new winston.transports.File({ 
+            filename: 'email-verification.log',
+            maxsize: 5242880, // 5MB
+            maxFiles: 5,
+        }),
+        new winston.transports.Console({
+            format: winston.format.combine(
+                winston.format.colorize(),
+                winston.format.simple()
+            )
+        })
+    ]
+});
 
 // Lire la version depuis package.json
 const packageJson = require('./package.json');
@@ -125,7 +150,7 @@ async function extractEmails(filePath) {
     // Éliminer les doublons
     return [...new Set(emails)];
   } catch (error) {
-    console.error('Erreur lors de l\'extraction des emails:', error);
+    logger.error('Erreur lors de l\'extraction des emails:', error);
     throw error;
   }
 }
@@ -133,7 +158,7 @@ async function extractEmails(filePath) {
 // Fonction pour vérifier un email
 async function verifyEmail(email) {
   try {
-
+    logger.info(`\nVérification de l'email: ${email}`);
     const emailValidator = new EmailValidator();
     const result = { 
       email, 
@@ -146,7 +171,8 @@ async function verifyEmail(email) {
     };
 
     // Vérification de la syntaxe
-    if (!validator.isEmail(email, {
+    logger.debug('- Vérification de la syntaxe...');
+    const syntaxValid = validator.isEmail(email, {
       allow_display_name: false,
       require_display_name: false, 
       allow_utf8_local_part: true, 
@@ -157,11 +183,15 @@ async function verifyEmail(email) {
       domain_specific_validation: true, 
       blacklisted_chars: '', 
       host_blacklist: []
-    })) {
+    });
+
+    if (!syntaxValid) {
+      logger.debug('  → Syntaxe invalide');
       result.messages.push('Syntaxe d\'email invalide');
       return result;
     }
     
+    logger.debug('  → Syntaxe valide');
     result.syntax = true;
 
     // Vérification du domaine disposable
@@ -171,29 +201,39 @@ async function verifyEmail(email) {
     ];
     
     const domain = email.split('@')[1];
+    logger.debug(`- Vérification du domaine: ${domain}`);
     if (disposableDomains.includes(domain)) {
+      logger.debug('  → Domaine jetable détecté');
       result.disposable = true;
       result.messages.push('Email jetable détecté');
     }
 
     // Vérification des enregistrements MX
+    logger.debug('- Vérification des enregistrements MX...');
     let mxValid = false;
     try {
       const mxRecords = await dnsPromises.resolveMx(domain);
       if (mxRecords && mxRecords.length > 0) {
+        logger.debug(`  → ${mxRecords.length} enregistrements MX trouvés`);
+        logger.debug('  → Serveurs MX: ' + mxRecords.map(r => r.exchange).join(', '));
         result.mx = true;
         mxValid = true;
       } else {
+        logger.debug('  → Aucun enregistrement MX trouvé');
         result.messages.push('Aucun enregistrement MX trouvé pour le domaine');
       }
     } catch (error) {
+      logger.error(`  → Erreur DNS: ${error.message}`);
       result.messages.push('Erreur DNS: ' + error.message);
     }
 
-    // Vérification plus approfondie (optionnelle)
+    // Vérification plus approfondie
+    logger.debug('- Vérification approfondie...');
     let deepVerificationSucceeded = false;
     try {
       const { validDomain, validMailbox } = await emailValidator.verify(email);
+      logger.debug(`  → Domaine valide: ${validDomain}`);
+      logger.debug(`  → Boîte mail valide: ${validMailbox}`);
 
       if (validDomain) {
         result.mx = true;
@@ -203,15 +243,13 @@ async function verifyEmail(email) {
       if (validMailbox) {
         deepVerificationSucceeded = true;
       } else if (validMailbox === false) {
-        // Seulement si validMailbox est explicitement false (pas undefined)
         result.probablyInvalid = true;
         result.messages.push('Boîte mail probablement invalide');
       }
 
     } catch (error) {
-      // Ne pas considérer un échec de la vérification approfondie comme un critère d'invalidité
+      logger.error(`  → Erreur vérification approfondie: ${error.message}`);
       result.messages.push('Vérification approfondie échouée: ' + error.message);
-      // Nous continuons avec les autres critères
     }
 
     // Vérifier si un message contient "Boîte mail probablement invalide"
@@ -220,21 +258,27 @@ async function verifyEmail(email) {
     }
 
     // Déterminer la validité globale
-    // Un email est considéré valide s'il a une syntaxe correcte et des MX records valides
-    // et qu'il n'est pas un email jetable et pas probablement invalide
     if (result.syntax && mxValid && !result.disposable && !result.probablyInvalid) {
       result.isValid = true;
     }
     
-    // Si la vérification approfondie a réussi, cela renforce notre confiance
     if (deepVerificationSucceeded) {
       result.isValid = true;
-      result.probablyInvalid = false; // Annuler le probablement invalide si vérification profonde ok
+      result.probablyInvalid = false;
     }
+
+    logger.info('- Résultat final:', {
+      isValid: result.isValid,
+      syntax: result.syntax,
+      mx: result.mx,
+      disposable: result.disposable,
+      probablyInvalid: result.probablyInvalid,
+      messages: result.messages
+    });
 
     return result;
   } catch (error) {
-    console.error('Erreur lors de la vérification de l\'email:', error);
+    logger.error('Erreur lors de la vérification de l\'email:', error);
     return { 
       email, 
       isValid: false, 
@@ -263,6 +307,8 @@ app.post('/verify', upload.single('emailFile'), async (req, res) => {
             progressMap.delete(sessionId);
             return res.status(400).json({ error: 'Aucune adresse email valide n\'a été trouvée dans le fichier.' });
         }
+
+        logger.info(`Session ${sessionId}: ${emails.length} emails trouvés`);
 
         // Envoyer l'ID de session immédiatement
         res.json({ sessionId });
@@ -308,6 +354,8 @@ app.post('/verify', upload.single('emailFile'), async (req, res) => {
                     mxErrors: results.filter(r => !r.mx).length
                 };
 
+                logger.info(`Session ${sessionId}: Traitement terminé`, stats);
+
                 // Nettoyer le fichier après traitement
                 await fs.unlink(req.file.path);
 
@@ -329,7 +377,7 @@ app.post('/verify', upload.single('emailFile'), async (req, res) => {
                 }, 3600000); // 1 heure
 
             } catch (error) {
-                console.error('Erreur lors du traitement des emails:', error);
+                logger.error(`Session ${sessionId}: Erreur lors du traitement des emails:`, error);
                 progressMap.set(sessionId, { 
                     progress: 100,
                     processed: emailsToVerify.length,
@@ -343,7 +391,7 @@ app.post('/verify', upload.single('emailFile'), async (req, res) => {
         processEmails();
 
     } catch (error) {
-        console.error('Erreur lors du traitement du fichier:', error);
+        logger.error('Erreur lors du traitement du fichier:', error);
         progressMap.delete(sessionId);
         res.status(500).json({ 
             error: 'Erreur lors du traitement du fichier: ' + error.message 
@@ -357,11 +405,11 @@ app.get('/complete/:sessionId', (req, res) => {
     const resultsData = resultsMap.get(sessionId);
 
     if (!resultsData) {
-        console.log('Aucun résultat trouvé pour la session:', sessionId);
+        logger.warn('Aucun résultat trouvé pour la session:', sessionId);
         return res.redirect('/');
     }
 
-    console.log('Résultats trouvés pour la session:', sessionId);
+    logger.info('Résultats trouvés pour la session:', sessionId);
     const { results, stats } = resultsData;
 
     // Définir le cookie avec les résultats
@@ -382,5 +430,5 @@ app.get('/complete/:sessionId', (req, res) => {
 
 // Démarrer le serveur
 app.listen(port, () => {
-  console.log(`Serveur démarré sur http://localhost:${port}`);
+    logger.info(`Serveur démarré sur http://localhost:${port}`);
 }); 

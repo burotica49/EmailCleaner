@@ -1,0 +1,190 @@
+Serveur démarré sur http://localhost:8883
+
+Vérification de l'email: apeaudeau@pilote.fr
+- Vérification de la syntaxe...
+  → Syntaxe valide
+- Vérification du domaine: pilote.fr
+- Vérification des enregistrements MX...
+  → 1 enregistrements MX trouvés
+  → Serveurs MX: pilote-fr.mail.protection.outlook.com
+- Vérification approfondie...
+  → Domaine valide: true
+  → Boîte mail valide: false
+- Résultat final: {
+  isValid: false,
+  syntax: true,
+  mx: true,
+  disposable: false,
+  probablyInvalid: true,
+  messages: [ 'Boîte mail probablement invalide' ]
+}
+
+Vérification de l'email: mattmanndavid@yahoo.fr
+- Vérification de la syntaxe...
+  → Syntaxe valide
+- Vérification du domaine: yahoo.fr
+- Vérification des enregistrements MX...
+  → 1 enregistrements MX trouvés
+  → Serveurs MX: mx-eu.mail.am0.yahoodns.net
+- Vérification approfondie...
+  → Domaine valide: true
+  → Boîte mail valide: null
+- Résultat final: {
+  isValid: true,
+  syntax: true,
+  mx: true,
+  disposable: false,
+  probablyInvalid: false,
+  messages: []
+}
+
+Vérification de l'email: contact@b17.fr
+- Vérification de la syntaxe...
+  → Syntaxe valide
+- Vérification du domaine: b17.fr
+- Vérification des enregistrements MX...
+  → 4 enregistrements MX trouvés
+  → Serveurs MX: mx04.cloud.vadesecure.com, mx01.cloud.vadesecure.com, mx03.cloud.vadesecure.com, mx02.cloud.vadesecure.com
+- Vérification approfondie...
+  → Domaine valide: true
+  → Boîte mail valide: null
+- Résultat final: {
+  isValid: true,
+  syntax: true,
+  mx: true,
+  disposable: false,
+  probablyInvalid: false,
+  messages: []
+}
+
+Vérification de l'email: contact@nvos.fr
+- Vérification de la syntaxe...
+  → Syntaxe valide
+- Vérification du domaine: nvos.fr
+- Vérification des enregistrements MX...
+  → Erreur DNS: queryMx ENOTFOUND nvos.fr
+- Vérification approfondie...
+  → Domaine valide: false
+  → Boîte mail valide: null
+- Résultat final: {
+  isValid: false,
+  syntax: true,
+  mx: false,
+  disposable: false,
+  probablyInvalid: false,
+  messages: [ 'Erreur DNS: queryMx ENOTFOUND nvos.fr' ]
+}
+
+Vérification de l'email: aayres@newsport.fr
+- Vérification de la syntaxe...
+  → Syntaxe valide
+- Vérification du domaine: newsport.fr
+- Vérification des enregistrements MX...
+  → 2 enregistrements MX trouvés
+  → Serveurs MX: mx186.m2bp.COM, mx186.mb1p.COM
+- Vérification approfondie...
+  → Domaine valide: true
+  → Boîte mail valide: true
+- Résultat final: {
+  isValid: true,
+  syntax: true,
+  mx: true,
+  disposable: false,
+  probablyInvalid: false,
+  messages: []
+}
+
+Vérification de l'email: abailleul@lagardere-se.com
+- Vérification de la syntaxe...
+  → Syntaxe valide
+- Vérification du domaine: lagardere-se.com
+- Vérification des enregistrements MX...
+  → 1 enregistrements MX trouvés
+  → Serveurs MX: lagarderese-com02c.mail.protection.outlook.com
+- Vérification approfondie...
+  → Domaine valide: true
+  → Boîte mail valide: false
+- Résultat final: {
+  isValid: false,
+  syntax: true,
+  mx: true,
+  disposable: false,
+  probablyInvalid: true,
+  messages: [ 'Boîte mail probablement invalide' ]
+}
+
+Vérification de l'email: abdoulaye.ndoye@sportfive.com
+- Vérification de la syntaxe...
+  → Syntaxe valide
+- Vérification du domaine: sportfive.com
+- Vérification des enregistrements MX...
+  → 2 enregistrements MX trouvés
+  → Serveurs MX: mx1.hc44895.c3s2.iphmx.com, mx2.hc44895.c3s2.iphmx.com
+- Vérification approfondie...
+  → Domaine valide: true
+  → Boîte mail valide: null
+- Résultat final: {
+  isValid: true,
+  syntax: true,
+  mx: true,
+  disposable: false,
+  probablyInvalid: false,
+  messages: []
+}
+
+Vérification de l'email: accueil@pavoifetes.com
+- Vérification de la syntaxe...
+  → Syntaxe valide
+- Vérification du domaine: pavoifetes.com
+- Vérification des enregistrements MX...
+  → 1 enregistrements MX trouvés
+  → Serveurs MX: pavoifetes-com.mail.protection.outlook.com
+- Vérification approfondie...
+  → Domaine valide: true
+  → Boîte mail valide: true
+- Résultat final: {
+  isValid: true,
+  syntax: true,
+  mx: true,
+  disposable: false,
+  probablyInvalid: false,
+  messages: []
+}
+
+Vérification de l'email: adeblanchard@sportlab.fr
+- Vérification de la syntaxe...
+  → Syntaxe valide
+- Vérification du domaine: sportlab.fr
+- Vérification des enregistrements MX...
+  → Erreur DNS: queryMx ETIMEOUT sportlab.fr
+- Vérification approfondie...
+  → Domaine valide: false
+  → Boîte mail valide: null
+- Résultat final: {
+  isValid: false,
+  syntax: true,
+  mx: false,
+  disposable: false,
+  probablyInvalid: false,
+  messages: [ 'Erreur DNS: queryMx ETIMEOUT sportlab.fr' ]
+}
+
+Vérification de l'email: adrien.bailleul@sportfive.com
+- Vérification de la syntaxe...
+  → Syntaxe valide
+- Vérification du domaine: sportfive.com
+- Vérification des enregistrements MX...
+  → 2 enregistrements MX trouvés
+  → Serveurs MX: mx1.hc44895.c3s2.iphmx.com, mx2.hc44895.c3s2.iphmx.com
+- Vérification approfondie...
+  → Domaine valide: true
+  → Boîte mail valide: null
+- Résultat final: {
+  isValid: true,
+  syntax: true,
+  mx: true,
+  disposable: false,
+  probablyInvalid: false,
+  messages: []
+}
+Résultats trouvés pour la session: 1743004387200
