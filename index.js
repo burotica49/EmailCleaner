@@ -11,6 +11,29 @@ const dnsPromises = dns.promises;
 const cookieParser = require('cookie-parser');
 const winston = require('winston');
 
+// Configuration du logger
+const logger = winston.createLogger({
+    level: 'debug',
+    format: winston.format.combine(
+        winston.format.timestamp(),
+        winston.format.printf(({ timestamp, level, message }) => {
+            return `${timestamp} ${level}: ${message}`;
+        })
+    ),
+    transports: [
+        new winston.transports.File({ 
+            filename: 'email-verification.log',
+            maxsize: 5242880, // 5MB
+            maxFiles: 5,
+        }),
+        new winston.transports.Console({
+            format: winston.format.combine(
+                winston.format.colorize(),
+                winston.format.simple()
+            )
+        })
+    ]
+});
 
 // Lire la version depuis package.json
 const packageJson = require('./package.json');
@@ -127,6 +150,7 @@ async function extractEmails(filePath) {
     // Éliminer les doublons
     return [...new Set(emails)];
   } catch (error) {
+    logger.error('Erreur lors de l\'extraction des emails:', error);
     throw error;
   }
 }
@@ -134,6 +158,7 @@ async function extractEmails(filePath) {
 // Fonction pour vérifier un email
 async function verifyEmail(email) {
   try {
+    logger.info(`\nVérification de l'email: ${email}`);
     const emailValidator = new EmailValidator();
     const result = { 
       email, 
@@ -146,6 +171,7 @@ async function verifyEmail(email) {
     };
 
     // Vérification de la syntaxe
+    logger.debug('- Vérification de la syntaxe...');
     const syntaxValid = validator.isEmail(email, {
       allow_display_name: false,
       require_display_name: false, 
@@ -160,10 +186,12 @@ async function verifyEmail(email) {
     });
 
     if (!syntaxValid) {
+      logger.debug('  → Syntaxe invalide');
       result.messages.push('Syntaxe d\'email invalide');
       return result;
     }
     
+    logger.debug('  → Syntaxe valide');
     result.syntax = true;
 
     // Vérification du domaine disposable
@@ -173,26 +201,34 @@ async function verifyEmail(email) {
     ];
     
     const domain = email.split('@')[1];
+    logger.debug(`- Vérification du domaine: ${domain}`);
     if (disposableDomains.includes(domain)) {
+      logger.debug('  → Domaine jetable détecté');
       result.disposable = true;
       result.messages.push('Email jetable détecté');
     }
 
     // Vérification des enregistrements MX
+    logger.debug('- Vérification des enregistrements MX...');
     let mxValid = false;
     try {
       const mxRecords = await dnsPromises.resolveMx(domain);
       if (mxRecords && mxRecords.length > 0) {
+        logger.debug(`  → ${mxRecords.length} enregistrements MX trouvés`);
+        logger.debug('  → Serveurs MX: ' + mxRecords.map(r => r.exchange).join(', '));
         result.mx = true;
         mxValid = true;
       } else {
+        logger.debug('  → Aucun enregistrement MX trouvé');
         result.messages.push('Aucun enregistrement MX trouvé pour le domaine');
       }
     } catch (error) {
+      logger.error(`  → Erreur DNS: ${error.message}`);
       result.messages.push('Erreur DNS: ' + error.message);
     }
 
     // Vérification plus approfondie
+    logger.debug('- Vérification approfondie...');
     let deepVerificationSucceeded = false;
     try {
       const emailValidator = new EmailValidator({
@@ -208,8 +244,21 @@ async function verifyEmail(email) {
         }
       });
 
+      // logger.debug('Configuration email-validator:', {
+      //   timeout: 10000,
+      //   smtpTimeout: 10000,
+      //   dnsTimeout: 5000,
+      //   maxConnections: 5,
+      //   port: 587,
+      //   verifyMailbox: true,
+      //   secure: false,
+      //   requireTLS: true
+      // });
 
       const { validDomain, validMailbox } = await emailValidator.verify(email);
+      logger.debug(`  → Domaine valide: ${validDomain}`);
+      logger.debug(`  → Boîte mail valide: ${validMailbox}`);
+      logger.debug(`  → Type de retour validMailbox: ${typeof validMailbox}`);
 
       if (validDomain) {
         result.mx = true;
@@ -226,10 +275,12 @@ async function verifyEmail(email) {
         result.messages.push('Boîte mail probablement invalide');
       } else if (validMailbox === null) {
         // Vérification impossible (timeout, blocage, etc.)
+        logger.debug('  → Vérification approfondie impossible');
         // On ne modifie pas probablyInvalid, on se base sur les autres critères
       }
 
     } catch (error) {
+      logger.error(`  → Erreur vérification approfondie: ${error.message}`);
       result.messages.push('Vérification approfondie échouée: ' + error.message);
     }
 
@@ -248,9 +299,18 @@ async function verifyEmail(email) {
       result.probablyInvalid = false;
     }
 
+    logger.info('- Résultat final:', {
+      isValid: result.isValid,
+      syntax: result.syntax,
+      mx: result.mx,
+      disposable: result.disposable,
+      probablyInvalid: result.probablyInvalid,
+      messages: result.messages
+    });
 
     return result;
   } catch (error) {
+    logger.error('Erreur lors de la vérification de l\'email:', error);
     return { 
       email, 
       isValid: false, 
@@ -280,6 +340,7 @@ app.post('/verify', upload.single('emailFile'), async (req, res) => {
             return res.status(400).json({ error: 'Aucune adresse email valide n\'a été trouvée dans le fichier.' });
         }
 
+        logger.info(`Session ${sessionId}: ${emails.length} emails trouvés`);
 
         // Envoyer l'ID de session immédiatement
         res.json({ sessionId });
@@ -325,6 +386,8 @@ app.post('/verify', upload.single('emailFile'), async (req, res) => {
                     mxErrors: results.filter(r => !r.mx).length
                 };
 
+                logger.info(`Session ${sessionId}: Traitement terminé`, stats);
+
                 // Nettoyer le fichier après traitement
                 await fs.unlink(req.file.path);
 
@@ -346,6 +409,7 @@ app.post('/verify', upload.single('emailFile'), async (req, res) => {
                 }, 3600000); // 1 heure
 
             } catch (error) {
+                logger.error(`Session ${sessionId}: Erreur lors du traitement des emails:`, error);
                 progressMap.set(sessionId, { 
                     progress: 100,
                     processed: emailsToVerify.length,
@@ -359,6 +423,7 @@ app.post('/verify', upload.single('emailFile'), async (req, res) => {
         processEmails();
 
     } catch (error) {
+        logger.error('Erreur lors du traitement du fichier:', error);
         progressMap.delete(sessionId);
         res.status(500).json({ 
             error: 'Erreur lors du traitement du fichier: ' + error.message 
@@ -372,9 +437,11 @@ app.get('/complete/:sessionId', (req, res) => {
     const resultsData = resultsMap.get(sessionId);
 
     if (!resultsData) {
+        logger.warn('Aucun résultat trouvé pour la session:', sessionId);
         return res.redirect('/');
     }
 
+    logger.info('Résultats trouvés pour la session:', sessionId);
     const { results, stats } = resultsData;
 
     // Définir le cookie avec les résultats
@@ -394,4 +461,6 @@ app.get('/complete/:sessionId', (req, res) => {
 });
 
 // Démarrer le serveur
-app.listen(port, () => {}); 
+app.listen(port, () => {
+    logger.info(`Serveur démarré sur http://localhost:${port}`);
+}); 
