@@ -42,7 +42,7 @@ Application web pour nettoyer et valider des listes d'emails à partir de fichie
    http://localhost:8882
    ```
 
-Utilisation de PM2
+5. Utilisation de PM2 pour un démarrage automatique (Facultatif)
    ```
    npm install -g pm2
    pm2 start index.js --name EmailCleaner
