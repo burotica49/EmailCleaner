@@ -3,3 +3,5 @@
 /.DS_Store
 /uploads
 /email-verification.log
+*.log
+email-verification.log

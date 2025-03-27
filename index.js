@@ -175,7 +175,7 @@ async function verifyEmail(email) {
     const syntaxValid = validator.isEmail(email, {
       allow_display_name: false,
       require_display_name: false, 
-      allow_utf8_local_part: true, 
+      allow_utf8_local_part: false, 
       require_tld: true,
       ignore_max_length: false,
       allow_ip_domain: false, 
