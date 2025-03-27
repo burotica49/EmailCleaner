@@ -257,11 +257,15 @@
         </div>
     </footer>
 
+    <!-- Stocker les données dans un élément caché -->
+    <div id="emailResultsData" style="display: none;" data-results="<%= encodeURIComponent(JSON.stringify(results)) %>"></div>
+
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script>
         // Fonction d'export CSV
         function exportResults() {
-            const results = JSON.parse('<%- JSON.stringify(results).replace(/\'/g, "\\\'").replace(/\\/g, "\\\\") %>');
+            // Récupérer les données depuis l'élément caché et les décoder
+            const results = JSON.parse(decodeURIComponent(document.getElementById('emailResultsData').dataset.results));
             let csvContent = "data:text/csv;charset=utf-8,";
             
             // Entêtes
@@ -290,7 +294,36 @@
         }
         
         document.addEventListener('DOMContentLoaded', function() {
-            // Le reste du code JavaScript est géré dans main.js
+            // Initialiser les popovers Bootstrap
+            const popoverTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="popover"]'));
+            popoverTriggerList.map(function (popoverTriggerEl) {
+                return new bootstrap.Popover(popoverTriggerEl, {
+                    html: true,
+                    container: 'body'
+                });
+            });
+
+            // Ajouter l'event listener pour le bouton d'export
+            document.getElementById('exportCsv').addEventListener('click', exportResults);
+
+            // Animation des barres de progression
+            document.querySelectorAll('.progress-bar').forEach(function(bar) {
+                setTimeout(function() {
+                    bar.style.width = bar.getAttribute('data-percent') + '%';
+                }, 100);
+            });
+
+            // Filtrage des emails
+            const searchEmail = document.getElementById('searchEmail');
+            if (searchEmail) {
+                searchEmail.addEventListener('input', function(e) {
+                    const searchTerm = e.target.value.toLowerCase();
+                    document.querySelectorAll('tbody tr').forEach(function(row) {
+                        const email = row.querySelector('td').textContent.toLowerCase();
+                        row.style.display = email.includes(searchTerm) ? '' : 'none';
+                    });
+                });
+            }
         });
     </script>
     <script src="/js/main.js"></script>

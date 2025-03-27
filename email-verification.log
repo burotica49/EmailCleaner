@@ -2300,3 +2300,427 @@ Vérification de l'email: adrien.bailleul@sportfive.com
 2025-03-27T08:42:27.497Z info: - Résultat final:
 2025-03-27T08:42:27.599Z info: Session 1743064933474: Traitement terminé
 2025-03-27T08:42:27.626Z info: Résultats trouvés pour la session:
+2025-03-27T08:49:42.713Z info: Session 1743065382712: 11 emails trouvés
+2025-03-27T08:49:42.714Z info: 
+Vérification de l'email: véronique@burotica.fr
+2025-03-27T08:49:42.714Z debug: - Vérification de la syntaxe...
+2025-03-27T08:49:42.714Z debug:   → Syntaxe invalide
+2025-03-27T08:49:42.815Z info: 
+Vérification de l'email: apeaudeau@pilote.fr
+2025-03-27T08:49:42.816Z debug: - Vérification de la syntaxe...
+2025-03-27T08:49:42.816Z debug:   → Syntaxe valide
+2025-03-27T08:49:42.816Z debug: - Vérification du domaine: pilote.fr
+2025-03-27T08:49:42.816Z debug: - Vérification des enregistrements MX...
+2025-03-27T08:49:42.879Z debug:   → 1 enregistrements MX trouvés
+2025-03-27T08:49:42.880Z debug:   → Serveurs MX: pilote-fr.mail.protection.outlook.com
+2025-03-27T08:49:42.880Z debug: - Vérification approfondie...
+2025-03-27T08:49:43.010Z debug:   → Domaine valide: true
+2025-03-27T08:49:43.010Z debug:   → Boîte mail valide: false
+2025-03-27T08:49:43.011Z debug:   → Type de retour validMailbox: boolean
+2025-03-27T08:49:43.011Z info: - Résultat final:
+2025-03-27T08:49:43.113Z info: 
+Vérification de l'email: mattmanndavid@yahoo.fr
+2025-03-27T08:49:43.113Z debug: - Vérification de la syntaxe...
+2025-03-27T08:49:43.113Z debug:   → Syntaxe valide
+2025-03-27T08:49:43.113Z debug: - Vérification du domaine: yahoo.fr
+2025-03-27T08:49:43.113Z debug: - Vérification des enregistrements MX...
+2025-03-27T08:49:43.141Z debug:   → 1 enregistrements MX trouvés
+2025-03-27T08:49:43.142Z debug:   → Serveurs MX: mx-eu.mail.am0.yahoodns.net
+2025-03-27T08:49:43.142Z debug: - Vérification approfondie...
+2025-03-27T08:49:43.143Z debug:   → Domaine valide: true
+2025-03-27T08:49:43.144Z debug:   → Boîte mail valide: null
+2025-03-27T08:49:43.144Z debug:   → Type de retour validMailbox: object
+2025-03-27T08:49:43.144Z debug:   → Vérification approfondie impossible
+2025-03-27T08:49:43.144Z info: - Résultat final:
+2025-03-27T08:49:43.245Z info: 
+Vérification de l'email: contact@b17.fr
+2025-03-27T08:49:43.245Z debug: - Vérification de la syntaxe...
+2025-03-27T08:49:43.245Z debug:   → Syntaxe valide
+2025-03-27T08:49:43.245Z debug: - Vérification du domaine: b17.fr
+2025-03-27T08:49:43.245Z debug: - Vérification des enregistrements MX...
+2025-03-27T08:49:43.365Z debug:   → 4 enregistrements MX trouvés
+2025-03-27T08:49:43.365Z debug:   → Serveurs MX: mx01.cloud.vadesecure.com, mx04.cloud.vadesecure.com, mx03.cloud.vadesecure.com, mx02.cloud.vadesecure.com
+2025-03-27T08:49:43.365Z debug: - Vérification approfondie...
+2025-03-27T08:49:43.969Z debug:   → Domaine valide: true
+2025-03-27T08:49:43.969Z debug:   → Boîte mail valide: null
+2025-03-27T08:49:43.969Z debug:   → Type de retour validMailbox: object
+2025-03-27T08:49:43.969Z debug:   → Vérification approfondie impossible
+2025-03-27T08:49:43.969Z info: - Résultat final:
+2025-03-27T08:49:44.070Z info: 
+Vérification de l'email: contact@nvos.fr
+2025-03-27T08:49:44.071Z debug: - Vérification de la syntaxe...
+2025-03-27T08:49:44.071Z debug:   → Syntaxe valide
+2025-03-27T08:49:44.071Z debug: - Vérification du domaine: nvos.fr
+2025-03-27T08:49:44.071Z debug: - Vérification des enregistrements MX...
+2025-03-27T08:49:44.074Z error:   → Erreur DNS: queryMx ENOTFOUND nvos.fr
+2025-03-27T08:49:44.075Z debug: - Vérification approfondie...
+2025-03-27T08:49:44.077Z debug:   → Domaine valide: false
+2025-03-27T08:49:44.077Z debug:   → Boîte mail valide: null
+2025-03-27T08:49:44.077Z debug:   → Type de retour validMailbox: object
+2025-03-27T08:49:44.077Z debug:   → Vérification approfondie impossible
+2025-03-27T08:49:44.078Z info: - Résultat final:
+2025-03-27T08:49:44.179Z info: 
+Vérification de l'email: aayres@newsport.fr
+2025-03-27T08:49:44.180Z debug: - Vérification de la syntaxe...
+2025-03-27T08:49:44.180Z debug:   → Syntaxe valide
+2025-03-27T08:49:44.180Z debug: - Vérification du domaine: newsport.fr
+2025-03-27T08:49:44.180Z debug: - Vérification des enregistrements MX...
+2025-03-27T08:49:44.261Z debug:   → 2 enregistrements MX trouvés
+2025-03-27T08:49:44.261Z debug:   → Serveurs MX: mx186.mb1p.com, mx186.m2bp.com
+2025-03-27T08:49:44.261Z debug: - Vérification approfondie...
+2025-03-27T08:49:45.131Z debug:   → Domaine valide: true
+2025-03-27T08:49:45.131Z debug:   → Boîte mail valide: true
+2025-03-27T08:49:45.132Z debug:   → Type de retour validMailbox: boolean
+2025-03-27T08:49:45.132Z info: - Résultat final:
+2025-03-27T08:49:45.234Z info: 
+Vérification de l'email: abailleul@lagardere-se.com
+2025-03-27T08:49:45.234Z debug: - Vérification de la syntaxe...
+2025-03-27T08:49:45.234Z debug:   → Syntaxe valide
+2025-03-27T08:49:45.234Z debug: - Vérification du domaine: lagardere-se.com
+2025-03-27T08:49:45.234Z debug: - Vérification des enregistrements MX...
+2025-03-27T08:49:45.296Z debug:   → 1 enregistrements MX trouvés
+2025-03-27T08:49:45.296Z debug:   → Serveurs MX: lagarderese-com02c.mail.protection.outlook.com
+2025-03-27T08:49:45.296Z debug: - Vérification approfondie...
+2025-03-27T08:49:45.544Z debug:   → Domaine valide: true
+2025-03-27T08:49:45.545Z debug:   → Boîte mail valide: false
+2025-03-27T08:49:45.545Z debug:   → Type de retour validMailbox: boolean
+2025-03-27T08:49:45.545Z info: - Résultat final:
+2025-03-27T08:49:45.646Z info: 
+Vérification de l'email: abdoulaye.ndoye@sportfive.com
+2025-03-27T08:49:45.646Z debug: - Vérification de la syntaxe...
+2025-03-27T08:49:45.647Z debug:   → Syntaxe valide
+2025-03-27T08:49:45.647Z debug: - Vérification du domaine: sportfive.com
+2025-03-27T08:49:45.647Z debug: - Vérification des enregistrements MX...
+2025-03-27T08:49:45.676Z debug:   → 2 enregistrements MX trouvés
+2025-03-27T08:49:45.677Z debug:   → Serveurs MX: mx1.hc44895.c3s2.iphmx.com, mx2.hc44895.c3s2.iphmx.com
+2025-03-27T08:49:45.677Z debug: - Vérification approfondie...
+2025-03-27T08:49:45.756Z debug:   → Domaine valide: true
+2025-03-27T08:49:45.756Z debug:   → Boîte mail valide: null
+2025-03-27T08:49:45.756Z debug:   → Type de retour validMailbox: object
+2025-03-27T08:49:45.756Z debug:   → Vérification approfondie impossible
+2025-03-27T08:49:45.756Z info: - Résultat final:
+2025-03-27T08:49:45.858Z info: 
+Vérification de l'email: accueil@pavoifetes.com
+2025-03-27T08:49:45.859Z debug: - Vérification de la syntaxe...
+2025-03-27T08:49:45.859Z debug:   → Syntaxe valide
+2025-03-27T08:49:45.859Z debug: - Vérification du domaine: pavoifetes.com
+2025-03-27T08:49:45.859Z debug: - Vérification des enregistrements MX...
+2025-03-27T08:49:45.928Z debug:   → 1 enregistrements MX trouvés
+2025-03-27T08:49:45.928Z debug:   → Serveurs MX: pavoifetes-com.mail.protection.outlook.com
+2025-03-27T08:49:45.928Z debug: - Vérification approfondie...
+2025-03-27T08:49:46.231Z debug:   → Domaine valide: true
+2025-03-27T08:49:46.231Z debug:   → Boîte mail valide: true
+2025-03-27T08:49:46.232Z debug:   → Type de retour validMailbox: boolean
+2025-03-27T08:49:46.232Z info: - Résultat final:
+2025-03-27T08:49:46.333Z info: 
+Vérification de l'email: adeblanchard@sportlab.fr
+2025-03-27T08:49:46.334Z debug: - Vérification de la syntaxe...
+2025-03-27T08:49:46.334Z debug:   → Syntaxe valide
+2025-03-27T08:49:46.334Z debug: - Vérification du domaine: sportlab.fr
+2025-03-27T08:49:46.334Z debug: - Vérification des enregistrements MX...
+2025-03-27T08:49:51.338Z error:   → Erreur DNS: queryMx ETIMEOUT sportlab.fr
+2025-03-27T08:49:51.338Z debug: - Vérification approfondie...
+2025-03-27T08:49:54.976Z debug:   → Domaine valide: false
+2025-03-27T08:49:54.977Z debug:   → Boîte mail valide: null
+2025-03-27T08:49:54.977Z debug:   → Type de retour validMailbox: object
+2025-03-27T08:49:54.978Z debug:   → Vérification approfondie impossible
+2025-03-27T08:49:54.978Z info: - Résultat final:
+2025-03-27T08:49:55.080Z info: 
+Vérification de l'email: adrien.bailleul@sportfive.com
+2025-03-27T08:49:55.080Z debug: - Vérification de la syntaxe...
+2025-03-27T08:49:55.080Z debug:   → Syntaxe valide
+2025-03-27T08:49:55.081Z debug: - Vérification du domaine: sportfive.com
+2025-03-27T08:49:55.081Z debug: - Vérification des enregistrements MX...
+2025-03-27T08:49:55.081Z debug:   → 2 enregistrements MX trouvés
+2025-03-27T08:49:55.081Z debug:   → Serveurs MX: mx1.hc44895.c3s2.iphmx.com, mx2.hc44895.c3s2.iphmx.com
+2025-03-27T08:49:55.081Z debug: - Vérification approfondie...
+2025-03-27T08:49:55.151Z debug:   → Domaine valide: true
+2025-03-27T08:49:55.151Z debug:   → Boîte mail valide: null
+2025-03-27T08:49:55.151Z debug:   → Type de retour validMailbox: object
+2025-03-27T08:49:55.152Z debug:   → Vérification approfondie impossible
+2025-03-27T08:49:55.152Z info: - Résultat final:
+2025-03-27T08:49:55.253Z info: Session 1743065382712: Traitement terminé
+2025-03-27T08:49:55.795Z info: Résultats trouvés pour la session:
+2025-03-27T08:55:04.038Z info: Serveur démarré sur http://localhost:8883
+2025-03-27T08:55:09.220Z info: Session 1743065709217: 11 emails trouvés
+2025-03-27T08:55:09.222Z info: 
+Vérification de l'email: véronique@burotica.fr
+2025-03-27T08:55:09.222Z debug: - Vérification de la syntaxe...
+2025-03-27T08:55:09.223Z debug:   → Syntaxe invalide
+2025-03-27T08:55:09.326Z info: 
+Vérification de l'email: apeaudeau@pilote.fr
+2025-03-27T08:55:09.327Z debug: - Vérification de la syntaxe...
+2025-03-27T08:55:09.327Z debug:   → Syntaxe valide
+2025-03-27T08:55:09.327Z debug: - Vérification du domaine: pilote.fr
+2025-03-27T08:55:09.328Z debug: - Vérification des enregistrements MX...
+2025-03-27T08:55:09.393Z debug:   → 1 enregistrements MX trouvés
+2025-03-27T08:55:09.394Z debug:   → Serveurs MX: pilote-fr.mail.protection.outlook.com
+2025-03-27T08:55:09.394Z debug: - Vérification approfondie...
+2025-03-27T08:55:09.602Z debug:   → Domaine valide: true
+2025-03-27T08:55:09.602Z debug:   → Boîte mail valide: false
+2025-03-27T08:55:09.602Z debug:   → Type de retour validMailbox: boolean
+2025-03-27T08:55:09.603Z info: - Résultat final:
+2025-03-27T08:55:09.705Z info: 
+Vérification de l'email: mattmanndavid@yahoo.fr
+2025-03-27T08:55:09.706Z debug: - Vérification de la syntaxe...
+2025-03-27T08:55:09.707Z debug:   → Syntaxe valide
+2025-03-27T08:55:09.707Z debug: - Vérification du domaine: yahoo.fr
+2025-03-27T08:55:09.707Z debug: - Vérification des enregistrements MX...
+2025-03-27T08:55:09.739Z debug:   → 1 enregistrements MX trouvés
+2025-03-27T08:55:09.740Z debug:   → Serveurs MX: mx-eu.mail.am0.yahoodns.net
+2025-03-27T08:55:09.740Z debug: - Vérification approfondie...
+2025-03-27T08:55:09.741Z debug:   → Domaine valide: true
+2025-03-27T08:55:09.742Z debug:   → Boîte mail valide: null
+2025-03-27T08:55:09.742Z debug:   → Type de retour validMailbox: object
+2025-03-27T08:55:09.742Z debug:   → Vérification approfondie impossible
+2025-03-27T08:55:09.742Z info: - Résultat final:
+2025-03-27T08:55:09.844Z info: 
+Vérification de l'email: contact@b17.fr
+2025-03-27T08:55:09.844Z debug: - Vérification de la syntaxe...
+2025-03-27T08:55:09.844Z debug:   → Syntaxe valide
+2025-03-27T08:55:09.845Z debug: - Vérification du domaine: b17.fr
+2025-03-27T08:55:09.845Z debug: - Vérification des enregistrements MX...
+2025-03-27T08:55:09.899Z debug:   → 4 enregistrements MX trouvés
+2025-03-27T08:55:09.899Z debug:   → Serveurs MX: mx04.cloud.vadesecure.com, mx03.cloud.vadesecure.com, mx01.cloud.vadesecure.com, mx02.cloud.vadesecure.com
+2025-03-27T08:55:09.900Z debug: - Vérification approfondie...
+2025-03-27T08:55:10.979Z debug:   → Domaine valide: true
+2025-03-27T08:55:10.980Z debug:   → Boîte mail valide: null
+2025-03-27T08:55:10.980Z debug:   → Type de retour validMailbox: object
+2025-03-27T08:55:10.980Z debug:   → Vérification approfondie impossible
+2025-03-27T08:55:10.980Z info: - Résultat final:
+2025-03-27T08:55:11.082Z info: 
+Vérification de l'email: contact@nvos.fr
+2025-03-27T08:55:11.082Z debug: - Vérification de la syntaxe...
+2025-03-27T08:55:11.082Z debug:   → Syntaxe valide
+2025-03-27T08:55:11.083Z debug: - Vérification du domaine: nvos.fr
+2025-03-27T08:55:11.083Z debug: - Vérification des enregistrements MX...
+2025-03-27T08:55:11.106Z error:   → Erreur DNS: queryMx ENOTFOUND nvos.fr
+2025-03-27T08:55:11.107Z debug: - Vérification approfondie...
+2025-03-27T08:55:11.108Z debug:   → Domaine valide: false
+2025-03-27T08:55:11.108Z debug:   → Boîte mail valide: null
+2025-03-27T08:55:11.108Z debug:   → Type de retour validMailbox: object
+2025-03-27T08:55:11.108Z debug:   → Vérification approfondie impossible
+2025-03-27T08:55:11.109Z info: - Résultat final:
+2025-03-27T08:55:11.212Z info: 
+Vérification de l'email: aayres@newsport.fr
+2025-03-27T08:55:11.213Z debug: - Vérification de la syntaxe...
+2025-03-27T08:55:11.214Z debug:   → Syntaxe valide
+2025-03-27T08:55:11.214Z debug: - Vérification du domaine: newsport.fr
+2025-03-27T08:55:11.214Z debug: - Vérification des enregistrements MX...
+2025-03-27T08:55:11.217Z debug:   → 2 enregistrements MX trouvés
+2025-03-27T08:55:11.217Z debug:   → Serveurs MX: mx186.m2bp.com, mx186.mb1p.com
+2025-03-27T08:55:11.217Z debug: - Vérification approfondie...
+2025-03-27T08:55:12.337Z debug:   → Domaine valide: true
+2025-03-27T08:55:12.338Z debug:   → Boîte mail valide: true
+2025-03-27T08:55:12.338Z debug:   → Type de retour validMailbox: boolean
+2025-03-27T08:55:12.338Z info: - Résultat final:
+2025-03-27T08:55:12.440Z info: 
+Vérification de l'email: abailleul@lagardere-se.com
+2025-03-27T08:55:12.441Z debug: - Vérification de la syntaxe...
+2025-03-27T08:55:12.441Z debug:   → Syntaxe valide
+2025-03-27T08:55:12.441Z debug: - Vérification du domaine: lagardere-se.com
+2025-03-27T08:55:12.441Z debug: - Vérification des enregistrements MX...
+2025-03-27T08:55:12.504Z debug:   → 1 enregistrements MX trouvés
+2025-03-27T08:55:12.505Z debug:   → Serveurs MX: lagarderese-com02c.mail.protection.outlook.com
+2025-03-27T08:55:12.505Z debug: - Vérification approfondie...
+2025-03-27T08:55:12.675Z debug:   → Domaine valide: true
+2025-03-27T08:55:12.676Z debug:   → Boîte mail valide: false
+2025-03-27T08:55:12.676Z debug:   → Type de retour validMailbox: boolean
+2025-03-27T08:55:12.676Z info: - Résultat final:
+2025-03-27T08:55:12.779Z info: 
+Vérification de l'email: abdoulaye.ndoye@sportfive.com
+2025-03-27T08:55:12.779Z debug: - Vérification de la syntaxe...
+2025-03-27T08:55:12.779Z debug:   → Syntaxe valide
+2025-03-27T08:55:12.779Z debug: - Vérification du domaine: sportfive.com
+2025-03-27T08:55:12.779Z debug: - Vérification des enregistrements MX...
+2025-03-27T08:55:12.824Z debug:   → 2 enregistrements MX trouvés
+2025-03-27T08:55:12.824Z debug:   → Serveurs MX: mx2.hc44895.c3s2.iphmx.com, mx1.hc44895.c3s2.iphmx.com
+2025-03-27T08:55:12.825Z debug: - Vérification approfondie...
+2025-03-27T08:55:12.892Z debug:   → Domaine valide: true
+2025-03-27T08:55:12.896Z debug:   → Boîte mail valide: null
+2025-03-27T08:55:12.896Z debug:   → Type de retour validMailbox: object
+2025-03-27T08:55:12.896Z debug:   → Vérification approfondie impossible
+2025-03-27T08:55:12.896Z info: - Résultat final:
+2025-03-27T08:55:12.999Z info: 
+Vérification de l'email: accueil@pavoifetes.com
+2025-03-27T08:55:13.000Z debug: - Vérification de la syntaxe...
+2025-03-27T08:55:13.000Z debug:   → Syntaxe valide
+2025-03-27T08:55:13.001Z debug: - Vérification du domaine: pavoifetes.com
+2025-03-27T08:55:13.001Z debug: - Vérification des enregistrements MX...
+2025-03-27T08:55:13.064Z debug:   → 1 enregistrements MX trouvés
+2025-03-27T08:55:13.065Z debug:   → Serveurs MX: pavoifetes-com.mail.protection.outlook.com
+2025-03-27T08:55:13.065Z debug: - Vérification approfondie...
+2025-03-27T08:55:13.330Z debug:   → Domaine valide: true
+2025-03-27T08:55:13.330Z debug:   → Boîte mail valide: true
+2025-03-27T08:55:13.330Z debug:   → Type de retour validMailbox: boolean
+2025-03-27T08:55:13.331Z info: - Résultat final:
+2025-03-27T08:55:13.432Z info: 
+Vérification de l'email: adeblanchard@sportlab.fr
+2025-03-27T08:55:13.433Z debug: - Vérification de la syntaxe...
+2025-03-27T08:55:13.433Z debug:   → Syntaxe valide
+2025-03-27T08:55:13.433Z debug: - Vérification du domaine: sportlab.fr
+2025-03-27T08:55:13.433Z debug: - Vérification des enregistrements MX...
+2025-03-27T08:55:18.437Z error:   → Erreur DNS: queryMx ETIMEOUT sportlab.fr
+2025-03-27T08:55:18.437Z debug: - Vérification approfondie...
+2025-03-27T08:55:23.441Z debug:   → Domaine valide: false
+2025-03-27T08:55:23.441Z debug:   → Boîte mail valide: null
+2025-03-27T08:55:23.441Z debug:   → Type de retour validMailbox: object
+2025-03-27T08:55:23.441Z debug:   → Vérification approfondie impossible
+2025-03-27T08:55:23.442Z info: - Résultat final:
+2025-03-27T08:55:23.542Z info: 
+Vérification de l'email: adrien.bailleul@sportfive.com
+2025-03-27T08:55:23.542Z debug: - Vérification de la syntaxe...
+2025-03-27T08:55:23.542Z debug:   → Syntaxe valide
+2025-03-27T08:55:23.542Z debug: - Vérification du domaine: sportfive.com
+2025-03-27T08:55:23.543Z debug: - Vérification des enregistrements MX...
+2025-03-27T08:55:23.543Z debug:   → 2 enregistrements MX trouvés
+2025-03-27T08:55:23.543Z debug:   → Serveurs MX: mx2.hc44895.c3s2.iphmx.com, mx1.hc44895.c3s2.iphmx.com
+2025-03-27T08:55:23.543Z debug: - Vérification approfondie...
+2025-03-27T08:55:23.606Z debug:   → Domaine valide: true
+2025-03-27T08:55:23.607Z debug:   → Boîte mail valide: null
+2025-03-27T08:55:23.607Z debug:   → Type de retour validMailbox: object
+2025-03-27T08:55:23.607Z debug:   → Vérification approfondie impossible
+2025-03-27T08:55:23.607Z info: - Résultat final:
+2025-03-27T08:55:23.708Z info: Session 1743065709217: Traitement terminé
+2025-03-27T08:55:24.407Z info: Résultats trouvés pour la session:
+2025-03-27T08:57:45.895Z info: Session 1743065865894: 11 emails trouvés
+2025-03-27T08:57:45.895Z info: 
+Vérification de l'email: véronique@burotica.fr
+2025-03-27T08:57:45.895Z debug: - Vérification de la syntaxe...
+2025-03-27T08:57:45.895Z debug:   → Syntaxe invalide
+2025-03-27T08:57:45.997Z info: 
+Vérification de l'email: apeaudeau@pilote.fr
+2025-03-27T08:57:45.997Z debug: - Vérification de la syntaxe...
+2025-03-27T08:57:45.998Z debug:   → Syntaxe valide
+2025-03-27T08:57:45.998Z debug: - Vérification du domaine: pilote.fr
+2025-03-27T08:57:45.998Z debug: - Vérification des enregistrements MX...
+2025-03-27T08:57:46.057Z debug:   → 1 enregistrements MX trouvés
+2025-03-27T08:57:46.057Z debug:   → Serveurs MX: pilote-fr.mail.protection.outlook.com
+2025-03-27T08:57:46.057Z debug: - Vérification approfondie...
+2025-03-27T08:57:46.187Z debug:   → Domaine valide: true
+2025-03-27T08:57:46.187Z debug:   → Boîte mail valide: false
+2025-03-27T08:57:46.187Z debug:   → Type de retour validMailbox: boolean
+2025-03-27T08:57:46.187Z info: - Résultat final:
+2025-03-27T08:57:46.288Z info: 
+Vérification de l'email: mattmanndavid@yahoo.fr
+2025-03-27T08:57:46.289Z debug: - Vérification de la syntaxe...
+2025-03-27T08:57:46.289Z debug:   → Syntaxe valide
+2025-03-27T08:57:46.289Z debug: - Vérification du domaine: yahoo.fr
+2025-03-27T08:57:46.289Z debug: - Vérification des enregistrements MX...
+2025-03-27T08:57:46.310Z debug:   → 1 enregistrements MX trouvés
+2025-03-27T08:57:46.311Z debug:   → Serveurs MX: mx-eu.mail.am0.yahoodns.net
+2025-03-27T08:57:46.311Z debug: - Vérification approfondie...
+2025-03-27T08:57:46.311Z debug:   → Domaine valide: true
+2025-03-27T08:57:46.311Z debug:   → Boîte mail valide: null
+2025-03-27T08:57:46.311Z debug:   → Type de retour validMailbox: object
+2025-03-27T08:57:46.311Z debug:   → Vérification approfondie impossible
+2025-03-27T08:57:46.311Z info: - Résultat final:
+2025-03-27T08:57:46.415Z info: 
+Vérification de l'email: contact@b17.fr
+2025-03-27T08:57:46.416Z debug: - Vérification de la syntaxe...
+2025-03-27T08:57:46.417Z debug:   → Syntaxe valide
+2025-03-27T08:57:46.417Z debug: - Vérification du domaine: b17.fr
+2025-03-27T08:57:46.417Z debug: - Vérification des enregistrements MX...
+2025-03-27T08:57:46.419Z debug:   → 4 enregistrements MX trouvés
+2025-03-27T08:57:46.419Z debug:   → Serveurs MX: mx04.cloud.vadesecure.com, mx03.cloud.vadesecure.com, mx01.cloud.vadesecure.com, mx02.cloud.vadesecure.com
+2025-03-27T08:57:46.419Z debug: - Vérification approfondie...
+2025-03-27T08:57:47.025Z debug:   → Domaine valide: true
+2025-03-27T08:57:47.025Z debug:   → Boîte mail valide: null
+2025-03-27T08:57:47.025Z debug:   → Type de retour validMailbox: object
+2025-03-27T08:57:47.025Z debug:   → Vérification approfondie impossible
+2025-03-27T08:57:47.025Z info: - Résultat final:
+2025-03-27T08:57:47.127Z info: 
+Vérification de l'email: contact@nvos.fr
+2025-03-27T08:57:47.127Z debug: - Vérification de la syntaxe...
+2025-03-27T08:57:47.127Z debug:   → Syntaxe valide
+2025-03-27T08:57:47.127Z debug: - Vérification du domaine: nvos.fr
+2025-03-27T08:57:47.127Z debug: - Vérification des enregistrements MX...
+2025-03-27T08:57:47.129Z error:   → Erreur DNS: queryMx ENOTFOUND nvos.fr
+2025-03-27T08:57:47.130Z debug: - Vérification approfondie...
+2025-03-27T08:57:47.131Z debug:   → Domaine valide: false
+2025-03-27T08:57:47.131Z debug:   → Boîte mail valide: null
+2025-03-27T08:57:47.131Z debug:   → Type de retour validMailbox: object
+2025-03-27T08:57:47.131Z debug:   → Vérification approfondie impossible
+2025-03-27T08:57:47.131Z info: - Résultat final:
+2025-03-27T08:57:47.232Z info: 
+Vérification de l'email: aayres@newsport.fr
+2025-03-27T08:57:47.233Z debug: - Vérification de la syntaxe...
+2025-03-27T08:57:47.233Z debug:   → Syntaxe valide
+2025-03-27T08:57:47.233Z debug: - Vérification du domaine: newsport.fr
+2025-03-27T08:57:47.233Z debug: - Vérification des enregistrements MX...
+2025-03-27T08:57:47.252Z debug:   → 2 enregistrements MX trouvés
+2025-03-27T08:57:47.253Z debug:   → Serveurs MX: mx186.mb1p.com, mx186.m2bp.com
+2025-03-27T08:57:47.253Z debug: - Vérification approfondie...
+2025-03-27T08:57:48.334Z debug:   → Domaine valide: true
+2025-03-27T08:57:48.335Z debug:   → Boîte mail valide: true
+2025-03-27T08:57:48.335Z debug:   → Type de retour validMailbox: boolean
+2025-03-27T08:57:48.335Z info: - Résultat final:
+2025-03-27T08:57:48.436Z info: 
+Vérification de l'email: abailleul@lagardere-se.com
+2025-03-27T08:57:48.436Z debug: - Vérification de la syntaxe...
+2025-03-27T08:57:48.436Z debug:   → Syntaxe valide
+2025-03-27T08:57:48.436Z debug: - Vérification du domaine: lagardere-se.com
+2025-03-27T08:57:48.436Z debug: - Vérification des enregistrements MX...
+2025-03-27T08:57:48.496Z debug:   → 1 enregistrements MX trouvés
+2025-03-27T08:57:48.497Z debug:   → Serveurs MX: lagarderese-com02c.mail.protection.outlook.com
+2025-03-27T08:57:48.497Z debug: - Vérification approfondie...
+2025-03-27T08:57:48.637Z debug:   → Domaine valide: true
+2025-03-27T08:57:48.637Z debug:   → Boîte mail valide: false
+2025-03-27T08:57:48.638Z debug:   → Type de retour validMailbox: boolean
+2025-03-27T08:57:48.638Z info: - Résultat final:
+2025-03-27T08:57:48.739Z info: 
+Vérification de l'email: abdoulaye.ndoye@sportfive.com
+2025-03-27T08:57:48.739Z debug: - Vérification de la syntaxe...
+2025-03-27T08:57:48.740Z debug:   → Syntaxe valide
+2025-03-27T08:57:48.740Z debug: - Vérification du domaine: sportfive.com
+2025-03-27T08:57:48.740Z debug: - Vérification des enregistrements MX...
+2025-03-27T08:57:48.741Z debug:   → 2 enregistrements MX trouvés
+2025-03-27T08:57:48.741Z debug:   → Serveurs MX: mx2.hc44895.c3s2.iphmx.com, mx1.hc44895.c3s2.iphmx.com
+2025-03-27T08:57:48.741Z debug: - Vérification approfondie...
+2025-03-27T08:57:48.825Z debug:   → Domaine valide: true
+2025-03-27T08:57:48.825Z debug:   → Boîte mail valide: null
+2025-03-27T08:57:48.825Z debug:   → Type de retour validMailbox: object
+2025-03-27T08:57:48.825Z debug:   → Vérification approfondie impossible
+2025-03-27T08:57:48.825Z info: - Résultat final:
+2025-03-27T08:57:48.925Z info: 
+Vérification de l'email: accueil@pavoifetes.com
+2025-03-27T08:57:48.926Z debug: - Vérification de la syntaxe...
+2025-03-27T08:57:48.926Z debug:   → Syntaxe valide
+2025-03-27T08:57:48.926Z debug: - Vérification du domaine: pavoifetes.com
+2025-03-27T08:57:48.926Z debug: - Vérification des enregistrements MX...
+2025-03-27T08:57:48.988Z debug:   → 1 enregistrements MX trouvés
+2025-03-27T08:57:48.989Z debug:   → Serveurs MX: pavoifetes-com.mail.protection.outlook.com
+2025-03-27T08:57:48.989Z debug: - Vérification approfondie...
+2025-03-27T08:57:49.386Z debug:   → Domaine valide: true
+2025-03-27T08:57:49.387Z debug:   → Boîte mail valide: true
+2025-03-27T08:57:49.387Z debug:   → Type de retour validMailbox: boolean
+2025-03-27T08:57:49.387Z info: - Résultat final:
+2025-03-27T08:57:49.490Z info: 
+Vérification de l'email: adeblanchard@sportlab.fr
+2025-03-27T08:57:49.491Z debug: - Vérification de la syntaxe...
+2025-03-27T08:57:49.491Z debug:   → Syntaxe valide
+2025-03-27T08:57:49.491Z debug: - Vérification du domaine: sportlab.fr
+2025-03-27T08:57:49.491Z debug: - Vérification des enregistrements MX...
+2025-03-27T08:57:54.495Z error:   → Erreur DNS: queryMx ETIMEOUT sportlab.fr
+2025-03-27T08:57:54.497Z debug: - Vérification approfondie...
+2025-03-27T08:57:58.748Z debug:   → Domaine valide: false
+2025-03-27T08:57:58.749Z debug:   → Boîte mail valide: null
+2025-03-27T08:57:58.749Z debug:   → Type de retour validMailbox: object
+2025-03-27T08:57:58.749Z debug:   → Vérification approfondie impossible
+2025-03-27T08:57:58.750Z info: - Résultat final:
+2025-03-27T08:57:58.851Z info: 
+Vérification de l'email: adrien.bailleul@sportfive.com
+2025-03-27T08:57:58.852Z debug: - Vérification de la syntaxe...
+2025-03-27T08:57:58.852Z debug:   → Syntaxe valide
+2025-03-27T08:57:58.852Z debug: - Vérification du domaine: sportfive.com
+2025-03-27T08:57:58.852Z debug: - Vérification des enregistrements MX...
+2025-03-27T08:57:58.852Z debug:   → 2 enregistrements MX trouvés
+2025-03-27T08:57:58.852Z debug:   → Serveurs MX: mx2.hc44895.c3s2.iphmx.com, mx1.hc44895.c3s2.iphmx.com
+2025-03-27T08:57:58.852Z debug: - Vérification approfondie...
+2025-03-27T08:57:58.908Z debug:   → Domaine valide: true
+2025-03-27T08:57:58.908Z debug:   → Boîte mail valide: null
+2025-03-27T08:57:58.908Z debug:   → Type de retour validMailbox: object
+2025-03-27T08:57:58.908Z debug:   → Vérification approfondie impossible
+2025-03-27T08:57:58.909Z info: - Résultat final:
+2025-03-27T08:57:59.009Z info: Session 1743065865894: Traitement terminé
+2025-03-27T08:57:59.031Z info: Résultats trouvés pour la session:
