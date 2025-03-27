@@ -69,12 +69,13 @@ Application web pour nettoyer et valider des listes d'emails à partir de fichie
 
 ## Limites
 
-- Pour des raisons de performance, le nombre d'emails traités est limité à 500 pour la démo.
+- Pour des raisons de performance, le nombre d'emails traités est limité à 5000.
 - La vérification approfondie des boîtes mail peut être limitée par les restrictions des serveurs de messagerie.
 
 ## Licence
 
-ISC
+- Développement réalisé par la société Burotica 
+- Licence Open Source
 
 ---
 
