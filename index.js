@@ -235,13 +235,13 @@ async function verifyEmail(email) {
         verifyDomain: true,
         verifyMailbox: true,
         timeout: 10000,
-        // smtpOptions: {
-        //   port: 587,  // Utiliser le port 587
-        //   host: 'smtp.gmail.com',
-        //   tls: {
-        //     rejectUnauthorized: false  // Pour éviter les erreurs TLS si le certificat change
-        //   }
-        // }
+        smtpOptions: {
+          port: 587,  // Utiliser le port 587
+          host: 'smtp.gmail.com',
+          tls: {
+            rejectUnauthorized: false  // Pour éviter les erreurs TLS si le certificat change
+          }
+        }
       });
 
 
