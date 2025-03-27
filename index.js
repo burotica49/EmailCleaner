@@ -235,25 +235,15 @@ async function verifyEmail(email) {
         verifyDomain: true,
         verifyMailbox: true,
         timeout: 10000,
-        smtpOptions: {
-          port: 587,  // Utiliser le port 587
-          host: 'smtp.gmail.com',
-          tls: {
-            rejectUnauthorized: false  // Pour éviter les erreurs TLS si le certificat change
-          }
-        }
+        // smtpOptions: {
+        //   port: 587,  // Utiliser le port 587
+        //   host: 'smtp.gmail.com',
+        //   tls: {
+        //     rejectUnauthorized: false  // Pour éviter les erreurs TLS si le certificat change
+        //   }
+        // }
       });
 
-      // logger.debug('Configuration email-validator:', {
-      //   timeout: 10000,
-      //   smtpTimeout: 10000,
-      //   dnsTimeout: 5000,
-      //   maxConnections: 5,
-      //   port: 587,
-      //   verifyMailbox: true,
-      //   secure: false,
-      //   requireTLS: true
-      // });
 
       const { validDomain, validMailbox } = await emailValidator.verify(email);
       logger.debug(`  → Domaine valide: ${validDomain}`);
