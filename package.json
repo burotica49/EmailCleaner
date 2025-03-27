@@ -1,6 +1,6 @@
 {
-  "name": "bulkverifieremail",
-  "version": "1.0.6",
+  "name": "emailcleaner",
+  "version": "1.0.7",
   "description": "Application pour nettoyer et valider des listes d'emails à partir de fichiers TXT, CSV ou XLSX",
   "main": "index.js",
   "scripts": {
@@ -17,7 +17,7 @@
     "xlsx",
     "cleaner"
   ],
-  "author": "",
+  "author": "Burotica",
   "license": "ISC",
   "dependencies": {
     "cookie-parser": "^1.4.7",
