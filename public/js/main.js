@@ -193,7 +193,12 @@ document.addEventListener('DOMContentLoaded', function() {
                                 redirectAttempted = true;
                                 completed = true;
                                 console.log('Redirection URL trouvée:', progressData.redirect);
-                                window.location.replace(progressData.redirect);
+                                
+                                // Ajouter un délai avant la redirection
+                                setTimeout(() => {
+                                    console.log('Exécution de la redirection vers:', progressData.redirect);
+                                    window.location.href = progressData.redirect;
+                                }, 500);
                                 return;
                             }
 

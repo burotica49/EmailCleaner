@@ -61,21 +61,21 @@
                                 </div>
                             </div>
                             <div class="col-lg col-md-4 col-6">
+                                <div class="p-3 rounded-3 bg-warning bg-opacity-10 text-center h-100">
+                                    <h3 class="h2 mb-1 text-dark"><%= stats.suspect %></h3>
+                                    <p class="mb-0 text-muted small">Emails suspects</p>
+                                </div>
+                            </div>
+                            <div class="col-lg col-md-4 col-6">
                                 <div class="p-3 rounded-3 bg-danger bg-opacity-10 text-center h-100">
                                     <h3 class="h2 mb-1 text-dark"><%= stats.invalid %></h3>
                                     <p class="mb-0 text-muted small">Emails invalides</p>
                                 </div>
                             </div>
                             <div class="col-lg col-md-4 col-6">
-                                <div class="p-3 rounded-3 bg-opacity-10 text-center h-100" style="background-color: #ffc107;">
-                                    <h3 class="h2 mb-1 text-dark"><%= stats.disposable %></h3>
-                                    <p class="mb-0 text-muted small">Emails jetables</p>
-                                </div>
-                            </div>
-                            <div class="col-lg col-md-4 col-6">
-                                <div class="p-3 rounded-3 bg-warning bg-opacity-10 text-center h-100">
-                                    <h3 class="h2 mb-1 text-dark"><%= stats.probablyInvalid %></h3>
-                                    <p class="mb-0 text-muted small">Probablement invalides</p>
+                                <div class="p-3 rounded-3 bg-info bg-opacity-10 text-center h-100">
+                                    <h3 class="h2 mb-1 text-dark"><%= stats.typoErrors || 0 %></h3>
+                                    <p class="mb-0 text-muted small">Fautes de frappe</p>
                                 </div>
                             </div>
                         </div>
@@ -96,9 +96,9 @@
                         <div class="stats">
                             <% 
                             const validPercent = Math.round((stats.valid / stats.total) * 100);
+                            const suspectPercent = Math.round((stats.suspect / stats.total) * 100);
                             const invalidPercent = Math.round((stats.invalid / stats.total) * 100);
                             const disposablePercent = Math.round((stats.disposable / stats.total) * 100);
-                            const probablyInvalidPercent = Math.round((stats.probablyInvalid / stats.total) * 100);
                             %>
                             
                             <div class="stat-item mb-3">
@@ -108,6 +108,16 @@
                                 </div>
                                 <div class="progress mt-1">
                                     <div class="progress-bar bg-success" style="width: 0%" data-percent="<%= validPercent %>"></div>
+                                </div>
+                            </div>
+                            
+                            <div class="stat-item mb-3">
+                                <div class="d-flex justify-content-between">
+                                    <span>Emails suspects:</span>
+                                    <span class="fw-bold text-warning"><%= stats.suspect %> (<%= suspectPercent %>%)</span>
+                                </div>
+                                <div class="progress mt-1">
+                                    <div class="progress-bar bg-warning" style="width: 0%" data-percent="<%= suspectPercent %>"></div>
                                 </div>
                             </div>
                             
@@ -124,20 +134,10 @@
                             <div class="stat-item mb-3">
                                 <div class="d-flex justify-content-between">
                                     <span>Emails jetables:</span>
-                                    <span class="fw-bold text-warning"><%= stats.disposable %> (<%= disposablePercent %>%)</span>
+                                    <span class="fw-bold text-info"><%= stats.disposable %> (<%= disposablePercent %>%)</span>
                                 </div>
                                 <div class="progress mt-1">
-                                    <div class="progress-bar bg-warning" style="width: 0%" data-percent="<%= disposablePercent %>"></div>
-                                </div>
-                            </div>
-                            
-                            <div class="stat-item probably-invalid mb-3">
-                                <div class="d-flex justify-content-between">
-                                    <span>Probablement invalides:</span>
-                                    <span class="fw-bold" style="color: #f97316"><%= stats.probablyInvalid %> (<%= probablyInvalidPercent %>%)</span>
-                                </div>
-                                <div class="progress mt-1">
-                                    <div class="progress-bar bg-orange" style="width: 0%" data-percent="<%= probablyInvalidPercent %>"></div>
+                                    <div class="progress-bar bg-info" style="width: 0%" data-percent="<%= disposablePercent %>"></div>
                                 </div>
                             </div>
                             
@@ -166,6 +166,20 @@
                                         <div class="d-flex justify-content-between w-100">
                                             <span>Erreurs de MX:</span>
                                             <span class="fw-bold text-secondary"><%= stats.mxErrors %></span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="stat-item mb-3">
+                                <div class="d-flex align-items-center">
+                                    <div class="me-3 p-2 rounded-circle bg-light text-center" style="width: 30px; height: 30px;">
+                                        <i class="bi bi-pencil-square text-info small"></i>
+                                    </div>
+                                    <div>
+                                        <div class="d-flex justify-content-between w-100">
+                                            <span>Fautes de frappe:</span>
+                                            <span class="fw-bold text-secondary"><%= stats.typoErrors || 0 %></span>
                                         </div>
                                     </div>
                                 </div>
@@ -204,15 +218,13 @@
                                 </thead>
                                 <tbody>
                                     <% results.forEach(function(result) { %>
-                                    <tr class="<%= result.isValid ? 'table-success' : (result.probablyInvalid ? 'table-orange' : (result.disposable ? 'table-warning' : 'table-danger')) %>">
+                                    <tr class="<%= result.isValid ? 'table-success' : (result.isSuspect ? 'table-warning' : 'table-danger') %>">
                                         <td><%= result.email %></td>
                                         <td>
                                             <% if (result.isValid) { %>
                                                 <span class="badge bg-success">Valide</span>
-                                            <% } else if (result.probablyInvalid) { %>
-                                                <span class="badge bg-orange text-white">Probablement Invalide</span>
-                                            <% } else if (result.disposable) { %>
-                                                <span class="badge bg-warning text-dark">Jetable</span>
+                                            <% } else if (result.isSuspect) { %>
+                                                <span class="badge bg-warning text-dark">Suspect</span>
                                             <% } else { %>
                                                 <span class="badge bg-danger">Invalide</span>
                                             <% } %>
@@ -221,13 +233,38 @@
                                             <button type="button" class="btn btn-sm btn-light" data-bs-toggle="popover" data-bs-placement="left" data-bs-trigger="hover"
                                                 title="Détails de vérification"
                                                 data-bs-content="<div class='p-1'>
-                                                               <div class='mb-2'><span class='badge <%= result.syntax ? 'bg-success' : 'bg-danger' %> me-2'>Syntaxe</span> <%= result.syntax ? 'Valide ✅' : 'Invalide ❌' %></div>
-                                                               <div class='mb-2'><span class='badge <%= result.mx ? 'bg-success' : 'bg-danger' %> me-2'>MX</span> <%= result.mx ? 'Valide ✅' : 'Invalide ❌' %></div>
-                                                               <div class='mb-2'><span class='badge <%= !result.disposable ? 'bg-success' : 'bg-warning' %> me-2'>Type</span> <%= result.disposable ? 'Jetable ⚠️' : 'Normal ✅' %></div>
-                                                               <div class='mb-2'><span class='badge <%= !result.probablyInvalid ? 'bg-success' : 'bg-orange' %> me-2'>Boîte</span> <%= result.probablyInvalid ? 'Suspect ⚠️' : 'OK ✅' %></div>
+                                                               <div class='d-flex justify-content-between mb-1'>
+                                                                   <span class='fw-bold'>Statut global:</span>
+                                                                   <span class='badge <%= result.isValid ? 'bg-success' : (result.isSuspect ? 'bg-warning' : 'bg-danger') %>'><%= result.isValid ? 'Valide' : (result.isSuspect ? 'Suspect' : 'Invalide') %></span>
+                                                               </div>
+                                                               <hr class='my-2'>
+                                                               <div class='mb-2'>
+                                                                   <span class='badge <%= result.syntax ? 'bg-success' : 'bg-danger' %> me-1'>Syntaxe</span>
+                                                                   <%= result.syntax ? 'Valide ✅' : 'Invalide ❌' %>
+                                                               </div>
+                                                               <div class='mb-2'>
+                                                                   <span class='badge <%= result.mx ? 'bg-success' : 'bg-danger' %> me-1'>MX</span>
+                                                                   <%= result.mx ? 'Valide ✅' : 'Invalide ❌' %>
+                                                               </div>
+                                                               <div class='mb-2'>
+                                                                   <span class='badge <%= !result.disposable ? 'bg-success' : 'bg-warning' %> me-1'>Domaine</span>
+                                                                   <%= result.disposable ? 'Jetable ⚠️' : 'Standard ✅' %>
+                                                               </div>
+                                                               <% if (result.smtpStatus) { %>
+                                                               <div class='mb-2'>
+                                                                   <span class='badge <%= result.smtpStatus === 'valid' ? 'bg-success' : (result.smtpStatus === 'suspect' ? 'bg-warning' : 'bg-danger') %> me-1'>SMTP</span>
+                                                                   <%= result.smtpStatus === 'valid' ? 'Valide ✅' : (result.smtpStatus === 'suspect' ? 'Suspect ⚠️' : 'Invalide ❌') %>
+                                                               </div>
+                                                               <% } %>
+                                                               <% if (result.typo) { %>
+                                                               <div class='mb-2'>
+                                                                   <span class='badge bg-info me-1'>Typo</span>
+                                                                   Faute de frappe possible ⚠️
+                                                               </div>
+                                                               <% } %>
                                                                <% if (result.messages.length > 0) { %>
                                                                <div class='mt-3 border-top pt-2'><strong>Messages:</strong></div>
-                                                               <ul class='ps-3 mb-0'>
+                                                               <ul class='ps-3 mb-0 small'>
                                                                 <% result.messages.forEach(function(msg) { %>
                                                                   <li><%= msg %></li>
                                                                 <% }); %>
@@ -269,18 +306,37 @@
             let csvContent = "data:text/csv;charset=utf-8,";
             
             // Entêtes
-            csvContent += "Email,Statut,Syntaxe,MX,Jetable,Probablement invalide,Messages\n";
+            csvContent += "Email,Statut,Syntaxe,MX,SMTP,Jetable,Faute de frappe,Messages\n";
             
             // Données
             results.forEach(function(result) {
-                const status = result.isValid ? "Valide" : (result.probablyInvalid ? "Probablement invalide" : (result.disposable ? "Jetable" : "Invalide"));
+                let status = "Invalide";
+                if (result.isValid) {
+                    status = "Valide";
+                } else if (result.isSuspect) {
+                    status = "Suspect";
+                } else {
+                    status = "Invalide";
+                }
+                
                 const syntax = result.syntax ? "Oui" : "Non";
                 const mx = result.mx ? "Oui" : "Non";
+                
+                // Déterminer le statut SMTP
+                let smtpStatus = "Inconnu";
+                if (result.smtpStatus === 'valid') {
+                    smtpStatus = "Valide";
+                } else if (result.smtpStatus === 'suspect') {
+                    smtpStatus = "Suspect";
+                } else if (result.smtpStatus === 'invalid') {
+                    smtpStatus = "Invalide";
+                }
+                
                 const disposable = result.disposable ? "Oui" : "Non";
-                const probablyInvalid = result.probablyInvalid ? "Oui" : "Non";
+                const typo = result.typo ? "Oui" : "Non";
                 const messages = result.messages.join(" | ").replace(/"/g, '""');
                 
-                csvContent += `"${result.email}","${status}","${syntax}","${mx}","${disposable}","${probablyInvalid}","${messages}"\n`;
+                csvContent += `"${result.email}","${status}","${syntax}","${mx}","${smtpStatus}","${disposable}","${typo}","${messages}"\n`;
             });
             
             // Créer le lien de téléchargement

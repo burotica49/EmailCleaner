@@ -1,6 +1,6 @@
 {
   "name": "emailcleaner",
-  "version": "1.0.7",
+  "version": "1.0.8",
   "description": "Application pour nettoyer et valider des listes d'emails à partir de fichiers TXT, CSV ou XLSX",
   "main": "index.js",
   "scripts": {
@@ -21,6 +21,7 @@
   "license": "ISC",
   "dependencies": {
     "cookie-parser": "^1.4.7",
+    "deep-email-validator": "^0.1.21",
     "dns": "^0.2.2",
     "dotenv": "^16.3.1",
     "ejs": "^3.1.9",

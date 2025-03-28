@@ -4,7 +4,7 @@ const path = require('path');
 const fs = require('fs-extra');
 const xlsx = require('xlsx');
 const validator = require('validator');
-const EmailValidator = require('email-deep-validator');
+const emailValidator = require('deep-email-validator');
 const dns = require('dns');
 const util = require('util');
 const dnsPromises = dns.promises;
@@ -90,24 +90,9 @@ app.get('/progress/:sessionId', (req, res) => {
     res.json(progress);
 });
 
-// Route pour afficher les résultats
+// Route pour afficher les résultats (uniquement pour compatibilité ou accès direct)
 app.get('/results', (req, res) => {
-    try {
-        const resultsData = req.cookies.emailResults;
-        if (!resultsData) {
-            return res.redirect('/');
-        }
-
-        const { results, stats } = JSON.parse(resultsData);
-        
-        // Nettoyer le cookie après récupération des données
-        res.clearCookie('emailResults');
-        
-        res.render('results', { results, stats, version: appVersion });
-    } catch (error) {
-        console.error('Erreur lors de la lecture des résultats:', error);
-        res.redirect('/');
-    }
+    res.redirect('/');
 });
 
 // Fonction pour extraire des emails d'un fichier
@@ -159,14 +144,17 @@ async function extractEmails(filePath) {
 async function verifyEmail(email) {
   try {
     logger.info(`\nVérification de l'email: ${email}`);
-    const emailValidator = new EmailValidator();
+    
     const result = { 
       email, 
-      isValid: false, 
+      isValid: false,
+      isSuspect: false,
+      isInvalid: false,
       syntax: false, 
       mx: false, 
       disposable: false, 
-      probablyInvalid: false, 
+      typo: false,
+      smtpStatus: null,
       messages: [] 
     };
 
@@ -188,106 +176,122 @@ async function verifyEmail(email) {
     if (!syntaxValid) {
       logger.debug('  → Syntaxe invalide');
       result.messages.push('Syntaxe d\'email invalide');
+      result.isInvalid = true;
       return result;
     }
     
     logger.debug('  → Syntaxe valide');
     result.syntax = true;
 
-    // Vérification du domaine disposable
-    const disposableDomains = [
-      'mailinator.com', 'yopmail.com', 'tempmail.com', 'guerrillamail.com',
-      'temp-mail.org', '10minutemail.com', 'throwawaymail.com', 'trashmail.com'
-    ];
+    // Utilisation de deep-email-validator pour une vérification complète
+    logger.debug('- Vérification approfondie avec deep-email-validator...');
     
-    const domain = email.split('@')[1];
-    logger.debug(`- Vérification du domaine: ${domain}`);
-    if (disposableDomains.includes(domain)) {
-      logger.debug('  → Domaine jetable détecté');
-      result.disposable = true;
-      result.messages.push('Email jetable détecté');
-    }
+    const validation = await emailValidator.validate({
+      email: email,
+      sender: email,
+      validateRegex: true,
+      validateMx: true,
+      validateTypo: true,
+      validateDisposable: true,
+      validateSMTP: true
+    });
 
-    // Vérification des enregistrements MX
-    logger.debug('- Vérification des enregistrements MX...');
-    let mxValid = false;
-    try {
-      const mxRecords = await dnsPromises.resolveMx(domain);
-      if (mxRecords && mxRecords.length > 0) {
-        logger.debug(`  → ${mxRecords.length} enregistrements MX trouvés`);
-        logger.debug('  → Serveurs MX: ' + mxRecords.map(r => r.exchange).join(', '));
-        result.mx = true;
-        mxValid = true;
-      } else {
-        logger.debug('  → Aucun enregistrement MX trouvé');
-        result.messages.push('Aucun enregistrement MX trouvé pour le domaine');
+    logger.debug('- Résultats de la validation approfondie:');
+    logger.debug(JSON.stringify(validation, null, 2));
+
+    // Analyse des différentes vérifications
+    if (validation.validators) {
+      // Vérification regex
+      if (validation.validators.regex) {
+        result.syntax = validation.validators.regex.valid;
+        if (!validation.validators.regex.valid) {
+          result.messages.push('Format d\'email invalide');
+          result.isInvalid = true;
+        }
       }
-    } catch (error) {
-      logger.error(`  → Erreur DNS: ${error.message}`);
-      result.messages.push('Erreur DNS: ' + error.message);
-    }
 
-    // Vérification plus approfondie
-    logger.debug('- Vérification approfondie...');
-    let deepVerificationSucceeded = false;
-    try {
-      const emailValidator = new EmailValidator({
-        verifyDomain: true,
-        verifyMailbox: true,
-        timeout: 10000
-      });
-
-
-      const { validDomain, validMailbox } = await emailValidator.verify(email);
-      logger.debug(`  → Domaine valide: ${validDomain}`);
-      logger.debug(`  → Boîte mail valide: ${validMailbox}`);
-      logger.debug(`  → Type de retour validMailbox: ${typeof validMailbox}`);
-
-      if (validDomain) {
-        result.mx = true;
-        mxValid = true;
+      // Vérification MX
+      if (validation.validators.mx) {
+        result.mx = validation.validators.mx.valid;
+        if (!validation.validators.mx.valid) {
+          if (validation.validators.mx.reason) {
+            result.messages.push('Erreur MX: ' + validation.validators.mx.reason);
+          }
+          result.isInvalid = true;
+        }
       }
       
-      if (validMailbox === true) {
-        // Boîte mail explicitement valide
-        deepVerificationSucceeded = true;
-        result.probablyInvalid = false;
-      } else if (validMailbox === false) {
-        // Boîte mail explicitement invalide
-        result.probablyInvalid = true;
-        result.messages.push('Boîte mail probablement invalide');
-      } else if (validMailbox === null) {
-        // Vérification impossible (timeout, blocage, etc.)
-        logger.debug('  → Vérification approfondie impossible');
-        // On ne modifie pas probablyInvalid, on se base sur les autres critères
+      // Vérification domaine jetable
+      if (validation.validators.disposable) {
+        result.disposable = !validation.validators.disposable.valid;
+        if (!validation.validators.disposable.valid) {
+          result.messages.push('Email jetable détecté');
+          result.isSuspect = true;
+        }
       }
-
-    } catch (error) {
-      logger.error(`  → Erreur vérification approfondie: ${error.message}`);
-      result.messages.push('Vérification approfondie échouée: ' + error.message);
+      
+      // Vérification SMTP
+      if (validation.validators.smtp) {
+        if (!validation.validators.smtp.valid) {
+          const smtpReason = validation.validators.smtp.reason || '';
+          
+          // Classifier certaines erreurs SMTP comme suspectes
+          if (smtpReason.includes('The mail transaction has failed for unknown causes') || 
+              smtpReason.includes('Unrecognized SMTP response')) {
+            result.isSuspect = true;
+            result.smtpStatus = 'suspect';
+          } 
+          // Classifier d'autres erreurs SMTP comme invalides
+          else if (smtpReason.includes('Mailbox not found') || 
+                   smtpReason.includes('The mail address that you specified was not syntactically correct')) {
+            result.isInvalid = true;
+            result.smtpStatus = 'invalid';
+          }
+          // Pour toutes les autres erreurs SMTP, considérer comme suspect par défaut
+          else {
+            result.isSuspect = true;
+            result.smtpStatus = 'suspect';
+          }
+          
+          if (validation.validators.smtp.reason) {
+            result.messages.push('Vérification SMTP: ' + validation.validators.smtp.reason);
+          }
+        } else {
+          result.smtpStatus = 'valid';
+        }
+      }
+      
+      // Vérification des typos courantes
+      if (validation.validators.typo) {
+        result.typo = !validation.validators.typo.valid;
+        if (!validation.validators.typo.valid) {
+          result.messages.push('Possible typo détectée: ' + (validation.validators.typo.suggestion || ''));
+          result.isSuspect = true;
+        }
+      }
     }
 
-    // Vérifier si un message contient "Boîte mail probablement invalide"
-    if (result.messages.some(msg => msg.includes('Boîte mail probablement invalide'))) {
-      result.probablyInvalid = true;
-    }
-
-    // Déterminer la validité globale
-    if (result.syntax && mxValid && !result.disposable && !result.probablyInvalid) {
+    // Détermination de la validité finale selon nos trois catégories
+    if (!result.isInvalid && !result.isSuspect) {
       result.isValid = true;
     }
-    
-    if (deepVerificationSucceeded) {
-      result.isValid = true;
-      result.probablyInvalid = false;
+
+    // Logique de préséance: invalide > suspect > valide
+    if (result.isInvalid) {
+      result.isSuspect = false;
+      result.isValid = false;
+    } else if (result.isSuspect) {
+      result.isValid = false;
     }
 
     logger.info('- Résultat final:', {
       isValid: result.isValid,
+      isSuspect: result.isSuspect,
+      isInvalid: result.isInvalid,
       syntax: result.syntax,
       mx: result.mx,
       disposable: result.disposable,
-      probablyInvalid: result.probablyInvalid,
+      typo: result.typo,
       messages: result.messages
     });
 
@@ -296,11 +300,14 @@ async function verifyEmail(email) {
     logger.error('Erreur lors de la vérification de l\'email:', error);
     return { 
       email, 
-      isValid: false, 
+      isValid: false,
+      isSuspect: false,
+      isInvalid: true,
       syntax: false, 
       mx: false, 
-      disposable: false, 
-      probablyInvalid: false,
+      disposable: false,
+      typo: false,
+      smtpStatus: null,
       messages: ['Erreur lors de la vérification: ' + error.message] 
     };
   }
@@ -362,11 +369,12 @@ app.post('/verify', upload.single('emailFile'), async (req, res) => {
                 const stats = {
                     total: results.length,
                     valid: results.filter(r => r.isValid).length,
-                    invalid: results.filter(r => !r.isValid).length,
+                    suspect: results.filter(r => r.isSuspect).length,
+                    invalid: results.filter(r => r.isInvalid).length,
                     disposable: results.filter(r => r.disposable).length,
-                    probablyInvalid: results.filter(r => r.probablyInvalid).length,
                     syntaxErrors: results.filter(r => !r.syntax).length,
-                    mxErrors: results.filter(r => !r.mx).length
+                    mxErrors: results.filter(r => !r.mx).length,
+                    typoErrors: results.filter(r => r.typo).length
                 };
 
                 logger.info(`Session ${sessionId}: Traitement terminé`, stats);
@@ -427,20 +435,12 @@ app.get('/complete/:sessionId', (req, res) => {
     logger.info('Résultats trouvés pour la session:', sessionId);
     const { results, stats } = resultsData;
 
-    // Définir le cookie avec les résultats
-    res.cookie('emailResults', JSON.stringify({ results, stats }), {
-        maxAge: 3600000, // 1 heure
-        httpOnly: true,
-        sameSite: 'strict',
-        path: '/'
-    });
-
+    // Rendre directement la page des résultats au lieu d'utiliser des cookies
+    res.render('results', { results, stats, version: appVersion });
+    
     // Nettoyer les données
     resultsMap.delete(sessionId);
     progressMap.delete(sessionId);
-
-    // Rediriger vers la page de résultats
-    res.redirect('/results');
 });
 
 // Démarrer le serveur
