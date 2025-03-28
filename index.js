@@ -12,28 +12,28 @@ const cookieParser = require('cookie-parser');
 const winston = require('winston');
 
 // Configuration du logger
-const logger = winston.createLogger({
-    level: 'debug',
-    format: winston.format.combine(
-        winston.format.timestamp(),
-        winston.format.printf(({ timestamp, level, message }) => {
-            return `${timestamp} ${level}: ${message}`;
-        })
-    ),
-    transports: [
-        new winston.transports.File({ 
-            filename: 'email-verification.log',
-            maxsize: 5242880, // 5MB
-            maxFiles: 5,
-        }),
-        new winston.transports.Console({
-            format: winston.format.combine(
-                winston.format.colorize(),
-                winston.format.simple()
-            )
-        })
-    ]
-});
+// const logger = winston.createLogger({
+//     level: 'debug',
+//     format: winston.format.combine(
+//         winston.format.timestamp(),
+//         winston.format.printf(({ timestamp, level, message }) => {
+//             return `${timestamp} ${level}: ${message}`;
+//         })
+//     ),
+//     transports: [
+//         new winston.transports.File({ 
+//             filename: 'email-verification.log',
+//             maxsize: 5242880, // 5MB
+//             maxFiles: 5,
+//         }),
+//         new winston.transports.Console({
+//             format: winston.format.combine(
+//                 winston.format.colorize(),
+//                 winston.format.simple()
+//             )
+//         })
+//     ]
+// });
 
 // Lire la version depuis package.json
 const packageJson = require('./package.json');
@@ -135,7 +135,7 @@ async function extractEmails(filePath) {
     // Éliminer les doublons
     return [...new Set(emails)];
   } catch (error) {
-    logger.error('Erreur lors de l\'extraction des emails:', error);
+    // logger.error('Erreur lors de l\'extraction des emails:', error);
     throw error;
   }
 }
@@ -143,7 +143,7 @@ async function extractEmails(filePath) {
 // Fonction pour vérifier un email
 async function verifyEmail(email) {
   try {
-    logger.info(`\nVérification de l'email: ${email}`);
+    // logger.info(`\nVérification de l'email: ${email}`);
     
     const result = { 
       email, 
@@ -159,7 +159,7 @@ async function verifyEmail(email) {
     };
 
     // Vérification de la syntaxe
-    logger.debug('- Vérification de la syntaxe...');
+    // logger.debug('- Vérification de la syntaxe...');
     const syntaxValid = validator.isEmail(email, {
       allow_display_name: false,
       require_display_name: false, 
@@ -174,17 +174,17 @@ async function verifyEmail(email) {
     });
 
     if (!syntaxValid) {
-      logger.debug('  → Syntaxe invalide');
+      // logger.debug('  → Syntaxe invalide');
       result.messages.push('Syntaxe d\'email invalide');
       result.isInvalid = true;
       return result;
     }
     
-    logger.debug('  → Syntaxe valide');
+    // logger.debug('  → Syntaxe valide');
     result.syntax = true;
 
     // Utilisation de deep-email-validator pour une vérification complète
-    logger.debug('- Vérification approfondie avec deep-email-validator...');
+    // logger.debug('- Vérification approfondie avec deep-email-validator...');
     
     const validation = await emailValidator.validate({
       email: email,
@@ -196,8 +196,8 @@ async function verifyEmail(email) {
       validateSMTP: true
     });
 
-    logger.debug('- Résultats de la validation approfondie:');
-    logger.debug(JSON.stringify(validation, null, 2));
+    // logger.debug('- Résultats de la validation approfondie:');
+    // logger.debug(JSON.stringify(validation, null, 2));
 
     // Analyse des différentes vérifications
     if (validation.validators) {
@@ -284,20 +284,20 @@ async function verifyEmail(email) {
       result.isValid = false;
     }
 
-    logger.info('- Résultat final:', {
-      isValid: result.isValid,
-      isSuspect: result.isSuspect,
-      isInvalid: result.isInvalid,
-      syntax: result.syntax,
-      mx: result.mx,
-      disposable: result.disposable,
-      typo: result.typo,
-      messages: result.messages
-    });
+    // logger.info('- Résultat final:', {
+    //   isValid: result.isValid,
+    //   isSuspect: result.isSuspect,
+    //   isInvalid: result.isInvalid,
+    //   syntax: result.syntax,
+    //   mx: result.mx,
+    //   disposable: result.disposable,
+    //   typo: result.typo,
+    //   messages: result.messages
+    // });
 
     return result;
   } catch (error) {
-    logger.error('Erreur lors de la vérification de l\'email:', error);
+    // logger.error('Erreur lors de la vérification de l\'email:', error);
     return { 
       email, 
       isValid: false,
@@ -330,7 +330,7 @@ app.post('/verify', upload.single('emailFile'), async (req, res) => {
             return res.status(400).json({ error: 'Aucune adresse email valide n\'a été trouvée dans le fichier.' });
         }
 
-        logger.info(`Session ${sessionId}: ${emails.length} emails trouvés`);
+        // logger.info(`Session ${sessionId}: ${emails.length} emails trouvés`);
 
         // Envoyer l'ID de session immédiatement
         res.json({ sessionId });
@@ -377,7 +377,7 @@ app.post('/verify', upload.single('emailFile'), async (req, res) => {
                     typoErrors: results.filter(r => r.typo).length
                 };
 
-                logger.info(`Session ${sessionId}: Traitement terminé`, stats);
+                // logger.info(`Session ${sessionId}: Traitement terminé`, stats);
 
                 // Nettoyer le fichier après traitement
                 await fs.unlink(req.file.path);
@@ -400,7 +400,7 @@ app.post('/verify', upload.single('emailFile'), async (req, res) => {
                 }, 3600000); // 1 heure
 
             } catch (error) {
-                logger.error(`Session ${sessionId}: Erreur lors du traitement des emails:`, error);
+                // logger.error(`Session ${sessionId}: Erreur lors du traitement des emails:`, error);
                 progressMap.set(sessionId, { 
                     progress: 100,
                     processed: emailsToVerify.length,
@@ -414,7 +414,7 @@ app.post('/verify', upload.single('emailFile'), async (req, res) => {
         processEmails();
 
     } catch (error) {
-        logger.error('Erreur lors du traitement du fichier:', error);
+        // logger.error('Erreur lors du traitement du fichier:', error);
         progressMap.delete(sessionId);
         res.status(500).json({ 
             error: 'Erreur lors du traitement du fichier: ' + error.message 
@@ -428,11 +428,11 @@ app.get('/complete/:sessionId', (req, res) => {
     const resultsData = resultsMap.get(sessionId);
 
     if (!resultsData) {
-        logger.warn('Aucun résultat trouvé pour la session:', sessionId);
+        // logger.warn('Aucun résultat trouvé pour la session:', sessionId);
         return res.redirect('/');
     }
 
-    logger.info('Résultats trouvés pour la session:', sessionId);
+    // logger.info('Résultats trouvés pour la session:', sessionId);
     const { results, stats } = resultsData;
 
     // Rendre directement la page des résultats au lieu d'utiliser des cookies
@@ -445,5 +445,5 @@ app.get('/complete/:sessionId', (req, res) => {
 
 // Démarrer le serveur
 app.listen(port, () => {
-    logger.info(`Serveur démarré sur http://localhost:${port}`);
+    // logger.info(`Serveur démarré sur http://localhost:${port}`);
 }); 
